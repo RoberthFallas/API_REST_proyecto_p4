@@ -1,0 +1,22 @@
+
+					*----------------------------*--*-*-*--------*-*-*-*-*-*-*-*--*-*-*-----------*-*-*-*-----*-*-*-*-*-*-*-*--------*-*-----
+					*	Pasos para instalacion:												*
+					*															*
+					*															*
+					*	-------Antes de comenzar: abrir una instancia de PowerShell con privilegios de administrador.--------		*
+					*	   (De preferencia utilizar consola integrada de VSCode, siempre con privilegios de administrador)		*
+					*															*
+					*															*
+					*	^1: py -3 -m venv venv												*
+					*															*
+					*	^2: venv\Scripts\activate											*
+					*															*
+					*	^3: pip install Flask												*
+					*															*
+					*	^4: pip install Flask flask-mysql										*
+					*															*
+					*	^5: pip install -U flask-cors											*
+					*															*
+					*	6: py run.py o click en boton de depuracion											*
+					*															*
+					----------------------------*--*-*-*--------*-*-*-*-*-*-*-*--*-*-*-----------*-*-*-*-----*-*-*-*-*-*-*-*--------*-*------
