@@ -23,3 +23,16 @@ def test_pasword_encript(passw):
             return jsonify('Ha ocurrido un error: ' + resp[1])
     except Exception as ex:
         print(ex)
+
+
+
+@app.route('/test_password_match/<int:id>/<string:passw>')
+def test_password_match(id, passw):
+    try:
+        resp = srv_tests.test_password_match(id, passw)
+        if(resp[0] == 'ok'):
+            return jsonify('Contrasena ha hecho match')
+        else:
+            return jsonify('Ha ocurrido un error: ' + resp[1])
+    except Exception as ex:
+        print(ex)

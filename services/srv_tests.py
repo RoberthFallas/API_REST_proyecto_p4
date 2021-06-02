@@ -1,7 +1,7 @@
+from pymysql.cursors import Cursor
 from init import mysql
 from contextlib import closing
-from werkzeug.security import generate_password_hash
-#from werkzeug.security import check_password_hash -----> si se necesita comprobar contrasenna
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def test_database_conection():
@@ -24,5 +24,24 @@ def test_pasword_encript(passw):
             conect.commit()
             resp = ('ok', '')
             return resp
+    except Exception as ex:
+        return ('error', repr(ex))
+
+
+
+def test_password_match(id, passw):
+    try:
+        conect = mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT p.contrasena FROM prueba_contrasena p WHERE p.id=%s', (id,))
+            result = cursor.fetchone()
+            if result:
+                db_password = result[0]
+                if check_password_hash(db_password, passw):
+                    return ('ok', '')
+                else:
+                    return ('warn', 'Contrasena invalida')
+            else:
+                return ('warn', 'id no valido')
     except Exception as ex:
         return ('error', repr(ex))
