@@ -15,4 +15,5 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 mysql.init_app(app)
 
-from controllers import ctrL_test
+from controllers import ctrl_test
+from controllers import ctrl_usuario
