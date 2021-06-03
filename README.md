@@ -1,2 +1,2 @@
-# proyecto_progra4 API
+# API REST
 Proyecto final de programación 4
