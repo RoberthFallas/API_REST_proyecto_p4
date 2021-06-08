@@ -19,7 +19,7 @@ def create_usuario():
         dir_result = srv_direcciones.create_direccion(dir_list)
 
         if _json['usuario_tipo'] == 'T':
-            srv_direcciones.create_direccion((usr_result[1], dir_result[1], _json['descripcion']))
+            srv_tiendas.create_tienda((usr_result[1], dir_result[1], _json['descripcion']))
 
         response = jsonify("Usuario creado de manera exitosa")
         return response
