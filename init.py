@@ -18,3 +18,4 @@ mysql.init_app(app)
 from controllers import ctrl_test
 from controllers import ctrl_usuario
 from controllers import ctrl_authentication
+from controllers import ctrl_tienda
