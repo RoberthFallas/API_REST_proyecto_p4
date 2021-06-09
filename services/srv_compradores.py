@@ -3,12 +3,12 @@ from contextlib import closing
 
 
 
-def create_tienda(datos):
+def create_comprador(user_id):
     try:
         conect = mysql.connect()
         with closing(conect.cursor()) as cursor:
             
-            cursor.execute('INSERT INTO tbl_tiendas(tienda_usuario, tienda_direccion, tienda_descripcion) VALUES(%s, %s, %s)', datos)
+            cursor.execute('INSERT INTO tbl_compradores(comprador_usuario) VALUES(%s)', (user_id,))
 
             conect.commit()
             resp = ('ok', cursor.lastrowid)

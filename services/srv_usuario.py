@@ -32,3 +32,31 @@ def create_compradores(datos):
             return resp
     except Exception as ex:
         return ('error', repr(ex))
+
+
+def check_user_data(datos):
+    # try:
+    #     cur.execute('SELECT p.id_proveedor, p.codigo, p.nombre, p.telefono, p.correo, COUNT(pr.id) as nm_prodcs FROM tbl_proveedores p ' 
+    #     +'LEFT JOIN tbl_productos pr ON pr.id_provedor = p.id_proveedor '
+    #     +'WHERE p.id_proveedor <> 1 '
+    #     +'GROUP BY p.codigo')
+        
+    #     json_items = []
+    #     content = {}
+
+    #     for result in rows:
+    #         content = {'id_proveedor':result[0], 'codigo': result[1], 'nombre': result[2], 'telefono': result[3], 'correo': result[4], 'np_prodcs': result[5]}
+    #         json_items.append(content)
+    #         content = {}
+    #     return jsonify(json_items)
+    # except Exception as ex:
+    #     print(ex)
+    with closing(mysql.connect().cursor()) as cursor:
+        try:
+            cursor.execute('SELECT COUNT(u.usuario_id) FROM tbl_usuarios u WHERE (u.usuario_cedula = %s OR u.usuario_nom_usr = %s)', datos)
+            rows = cursor.fetchone()
+            resp = ('ok', rows[0])
+            return resp
+        except Exception as ex:
+            return ('error', repr(ex))
+
