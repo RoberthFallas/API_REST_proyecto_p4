@@ -22,7 +22,21 @@ def get_categorias(id):
         json_items=[]
         content={}
         for resul in resp:
-            content={'categoria':resul[0]}
+            content={'categoria_id':resul[0],'categoria':resul[1]}
+            json_items.append(content)
+            content={}
+        return jsonify(json_items)
+@app.route('/get_productosTiendas/<int:id>/<string:nombre>/<int:id_categoria>')
+@app.route('/get_productosTiendas/<int:id>/<int:id_categoria>')
+@app.route('/get_productosTiendas/<int:id>/<string:nombre>')
+@app.route('/get_productosTiendas/<int:id>')
+def get_productosTiendas(id,nombre=None,id_categoria=None):
+    
+        resp=svr_tienda.get_productosTiendas(id,nombre,id_categoria)
+        json_items=[]
+        content={}
+        for resul in resp:
+            content={'producto_id':resul[0],'precio':resul[1],'foto':resul[2],'nombre':resul[3]}
             json_items.append(content)
             content={}
         return jsonify(json_items)
