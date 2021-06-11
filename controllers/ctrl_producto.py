@@ -2,6 +2,8 @@ from flask import json, jsonify, request, flash, redirect, url_for
 from init import app
 from werkzeug.utils import secure_filename
 from services import srv_producto
+from services import srv_foto
+from services import srv_direccion
 
 import os 
 
@@ -36,24 +38,37 @@ def create_product():
 
        data_json = json.loads(data)
 
-       print(data)
+       resp_dir =  srv_direccion.insert_direccion_producto(data_json)
+     
 
-       res = srv_producto.create_product(data_json)
+       if resp_dir[0] == 'ok':       
+            res = srv_producto.create_product(data_json, resp_dir[1])
 
-       print(res)
+            print(res)
 
-       files = request.files.getlist('file')
-
-       for file in files:
-           try:
-               if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.getcwd() + '/resources/images/' + filename)
-           except FileNotFoundError:
-               return 'Error, foldder doest no exist'
-        
-       return res
-  
+            if res[0] == 'ok': 
+                files = request.files.getlist('file') #    file = request.files['file']
+                for file in files:
+                    try:
+                        if file and allowed_file(file.filename):
+                            filename = secure_filename(file.filename)
+                            file.save(os.getcwd() + '/resources/images/' + filename)
+                            resp = srv_foto.save_photo(res[1], filename)
+                            print(resp[1])      
+                    except FileNotFoundError:
+                            respuesta = jsonify( "Hubo un error al guardar las imagenes del producto")
+                            respuesta.status_code = 200
+                            return respuesta
+                           
+                
+                         
+                respuesta = jsonify( "El producto se guardó exitosamente")
+                respuesta.status_code = 200
+                return respuesta
+                
+       respuesta = jsonify( "Surgieron problemas al guardar el producto. Contacte el administrador")
+       respuesta.status_code = 500 
+       return respuesta
   
 
     

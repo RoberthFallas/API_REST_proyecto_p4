@@ -3,14 +3,14 @@ from init import mysql
 from contextlib import closing
 from werkzeug.security import generate_password_hash, check_password_hash
 
-def create_product(data_json):
+def create_product(data_json, dir):
  try:
         conect = mysql.connect()
 
         query = "INSERT INTO tbl_productos( producto_direccion, producto_categoria, producto_tienda, producto_nombre, producto_descripcion, producto_precio, producto_cantidad, producto_publicacion, producto_prom_envio, producto_cost_env) VALUES (%s,%s,%s,%s,%s,%s,%s,CURRENT_DATE(),%s,%s)"
-        _direccion = 1
-        _categoria = 1
-        _tienda = 1
+        _direccion = dir
+        _categoria = data_json['categoria']
+        _tienda = data_json['id']
         _nombre = data_json['nombre']
         _descripcion = data_json['descripcion']
         _precio = data_json['precio']
@@ -25,7 +25,10 @@ def create_product(data_json):
             cursor.execute(query, data)
             conect.commit()
 
-            return "Producto registrado con éxito"
+            
+            id_insert =  cursor.lastrowid 
+
+            return ('ok', id_insert)
 
            
  except Exception as ex:
