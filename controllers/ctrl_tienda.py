@@ -15,8 +15,8 @@ def get_Tiendas():
             content={}
         return jsonify(json_items)
 
-@app.route('/get_categorias/<int:id>')
-def get_categorias(id):
+@app.route('/get_categorias2/<int:id>')
+def get_categorias2(id):
     
         resp=svr_tienda.get_categorias(id)
         json_items=[]
@@ -26,6 +26,7 @@ def get_categorias(id):
             json_items.append(content)
             content={}
         return jsonify(json_items)
+
 @app.route('/get_productosTiendas/<int:id>/<string:nombre>/<int:id_categoria>')
 @app.route('/get_productosTiendas/<int:id>/<int:id_categoria>')
 @app.route('/get_productosTiendas/<int:id>/<string:nombre>')
