@@ -23,3 +23,4 @@ from controllers import ctrl_usuario
 from controllers import ctrl_authentication
 from controllers import ctrl_producto
 from controllers import ctrl_categoria
+from controllers import ctrl_tienda
