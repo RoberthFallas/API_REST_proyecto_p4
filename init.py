@@ -2,7 +2,10 @@ from flask import Flask
 from flask_cors import CORS
 from flaskext.mysql import MySQL
 
+UPLOAD_FOLDER = '/resources/images'
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 CORS(app)
 
 mysql = MySQL()
@@ -18,3 +21,5 @@ mysql.init_app(app)
 from controllers import ctrl_test
 from controllers import ctrl_usuario
 from controllers import ctrl_authentication
+from controllers import ctrl_producto
+from controllers import ctrl_categoria

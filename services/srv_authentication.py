@@ -21,7 +21,7 @@ def login(user, password):
                 if result:
                     db_password = result[1]
                     if check_password_hash(db_password, password):
-                        cursor.execute('SELECT u.* FROM tbl_usuarios u WHERE u.usuario_id=%s', (result[0],))
+                        cursor.execute('SELECT u.*, t.tienda_id, t.tienda_descripcion, d.direcciion_pais, d.direccion_canton  FROM tbl_usuarios u  JOIN  tbl_tiendas t ON t.tienda_usuario = u.usuario_id  JOIN tbl_direcciones d ON t.tienda_direccion = d.direccion_id WHERE u.usuario_id=%s', (result[0],))
                         return ('ok', cursor.fetchone())
                     else:
                         return ('warn', 'La contraseña que has ingresado no corresponde con tu usuario')
