@@ -4,30 +4,9 @@ from werkzeug.utils import secure_filename
 from services import srv_producto
 from services import srv_foto
 from services import srv_direccion
+import time
 
 import os 
-
-
-
-@app.route('/create_producto', methods=['POST'])
-def create_producto():
-   if request.method == 'POST':
-        # check if the post request has the file part
-        if 'imagen' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['imagen']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            print(os.path.join(app.config['UPLOAD_FOLDER']))
-            file.save(os.getcwd() + '/resources/images/' + filename)
-            return 'success'
-
 
 
 @app.route('/create_product', methods=['POST'])
@@ -44,17 +23,19 @@ def create_product():
        if resp_dir[0] == 'ok':       
             res = srv_producto.create_product(data_json, resp_dir[1])
 
-            print(res)
+            print(res) 
 
             if res[0] == 'ok': 
                 files = request.files.getlist('file') #    file = request.files['file']
+                cont = 0
                 for file in files:
                     try:
                         if file and allowed_file(file.filename):
-                            filename = secure_filename(file.filename)
+                            pre_filename = str(round(time.time() * 1000)+cont) + '.' + file.filename.rsplit('.', 1)[1].lower()
+                            filename = secure_filename(pre_filename)
                             file.save(os.getcwd() + '/resources/images/' + filename)
                             resp = srv_foto.save_photo(res[1], filename)
-                            print(resp[1])      
+                            cont = cont + 1  
                     except FileNotFoundError:
                             respuesta = jsonify( "Hubo un error al guardar las imagenes del producto")
                             respuesta.status_code = 200
@@ -70,10 +51,29 @@ def create_product():
        respuesta.status_code = 500 
        return respuesta
   
-
+@app.route('/delete_product/<string:id>', methods=['DELETE'])
+def delele_product(id):
+ try:
+        response = None
+        resp = srv_producto.delete_producto(id)
     
+        if resp == 'ok':
+            response = jsonify("Producto eliminado con exito")                                                                                   #En la posicion 0 viene el estado en la 1 viene la lista de datos o el mensaje del error
+            response.status_code = 200
+            return response
+
+        else:
+            response = jsonify(resp)
+            response.status_code = 401 
+        return response
+ except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
+
+
         
 def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
