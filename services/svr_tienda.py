@@ -1,3 +1,4 @@
+from pymysql import connect
 from pymysql.cursors import Cursor
 from init import mysql
 from contextlib import closing
@@ -41,4 +42,26 @@ def get_productosTiendas(id,nombre=None,id_categoria=None):
             result=cursor.fetchall()
             return (result)
     except  Exception as ex:
+        return ('error',repr(ex))
+
+def get_fotosProductos(id):
+    try:
+        conect = mysql.connect()
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT f.foto_id,f.foto_url from tbl_fotos f where f.foto_producto= %s', (id))
+            result=cursor.fetchall()
+            return (result)
+    except Exception as ex:
+        return ('error', repr(ex))
+
+
+
+def get_productoSelecionado(id):
+    try:
+        conect=mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT p.producto_id, p.producto_precio,p.producto_nombre, p.producto_descripcion, p.producto_cantidad, p.producto_publicacion, p.producto_prom_envio, p.producto_cost_env, p.producto_oferta, d.direcciion_pais, d.direccion_provincia, d.direccion_canton FROM tbl_productos p INNER JOIN tbl_direcciones d ON d.direccion_id = p.producto_direccion INNER JOIN tbl_categorias c on c.categoria_id=p.producto_categoria where p.producto_id=%s',(id))
+            result=cursor.fetchall()
+            return (result)
+    except Exception as ex:
         return ('error',repr(ex))

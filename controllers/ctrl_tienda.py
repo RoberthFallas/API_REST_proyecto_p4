@@ -41,3 +41,27 @@ def get_productosTiendas(id,nombre=None,id_categoria=None):
             json_items.append(content)
             content={}
         return jsonify(json_items)
+
+@app.route('/get_fotosProductos/<int:id>')        
+def get_fotosProductos(id):
+        resp=svr_tienda.get_fotosProductos(id)
+        json_items=[]
+        content={}
+        for resul in resp:
+            content={'foto_id':resul[0],'url':resul[1]}
+            json_items.append(content)
+            content={}
+        return jsonify(json_items)
+
+@app.route('/get_productoSelecionado/<int:id>')    
+def get_productoSelecionado(id):
+         resp=svr_tienda.get_productoSelecionado(id)
+         json_items=[]
+         content={}
+         for resul in resp:
+             content={'producto_id':resul[0],'precio':resul[1],'nombre':resul[2], 'descripcion':resul[3], 'cantidad':resul[4], 
+                    'publicacion':resul[5], 'prom_envio':resul[6], 'cost_envio':resul[7], 'oferta':resul[8], 'pais':resul[9], 'provincia':resul[10], 'canton':resul[11]}
+             json_items.append(content)
+             content={}
+         return jsonify(json_items)
+
