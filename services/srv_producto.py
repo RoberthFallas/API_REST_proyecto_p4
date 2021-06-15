@@ -87,5 +87,25 @@ def delelete_images_server(id):
       except Exception as ex:
         return ('error', repr(ex))
 
-       
-     
+def update_product(data_json): #esta en desarrollo
+    _categoria = data_json['categoria']
+    _nombre = data_json['nombre']
+    _descripcion = data_json['descripcion']
+    _precio = data_json['precio']
+    _cantidad = data_json['cantidad']
+    _duracion = data_json['duracion']
+    _costo = data_json['costo']
+
+
+def get_product_by_id(id):
+  try:
+      conect = mysql.connect()
+      with closing(conect.cursor()) as cursor:
+   
+        cursor.execute('SELECT p.producto_id, p.producto_precio ,p.producto_nombre, p.producto_descripcion, p.producto_cantidad, p.producto_publicacion, p.producto_prom_envio, p.producto_cost_env, p.producto_oferta, d.direcciion_pais, d.direccion_provincia, d.direccion_canton FROM tbl_productos p INNER JOIN tbl_direcciones d ON d.direccion_id = p.producto_direccion where p.producto_id=%s',(id))
+      
+        result=cursor.fetchall()
+
+        return ('ok' ,result)
+  except  Exception as ex:
+      return ('error',repr(ex))

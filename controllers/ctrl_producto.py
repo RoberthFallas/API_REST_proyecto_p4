@@ -71,9 +71,69 @@ def delele_product(id):
         response.status_code = 500
         return response 
 
+@app.route('/update_product/', methods=['PUT'])
+def update_product():
+ try:
+        response = None
+        _json = request.get_json(force=True)
+        resp = srv_producto.delete_producto(id)
+    
+        if resp == 'ok':
+            response = jsonify("Producto eliminado con exito")                                                                                   #En la posicion 0 viene el estado en la 1 viene la lista de datos o el mensaje del error
+            response.status_code = 200
+            return response
+
+        else:
+            response = jsonify(resp)
+            response.status_code = 401 
+        return response
+ except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
+
+
+@app.route('/get_product_by_id/<int:id>')
+def get_product_by_id(id):
+ try:
+        print("ddentro de get by id")
+        response = None
+        
+        resp = srv_producto.get_product_by_id(id)
+        print(resp)
+    
+        if resp[0] == 'ok':
+            rows = resp[1]
+            content = {}    
+            json_items = []
+            for resul in rows:
+                content = {'producto_id':resul[0],'precio':resul[1],'nombre':resul[2], 'descripcion':resul[3], 'cantidad':resul[4], 
+                    'publicacion':resul[5], 'prom_envio':resul[6], 'cost_envio':resul[7], 'oferta':resul[9], 'pais':resul[9], 'provincia':resul[10], 'canton':resul[11]}
+
+                json_items.append(content)
+                content = {}
+
+            response = jsonify(json_items)
+            response.status_code = 200
+            return(response)
+        else:
+            response = jsonify(resp[0])
+            response.status_code = 401 if resp[0] == 'warn' else 500
+            return(response)
+    
+     
+ except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
+
+
+
 
         
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
