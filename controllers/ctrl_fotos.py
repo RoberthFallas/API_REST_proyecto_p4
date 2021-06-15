@@ -1,33 +1,37 @@
 
-from pymysql.cursors import Cursor
-from init import mysql
-from contextlib import closing
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import json, jsonify, send_file
+from init import app
+from services import srv_foto
+import os
+@app.route('/get_fotos_by_producto/<string:id>' )
+def get_fotos_by_producto(id): 
+      try:
+        print("in get by id")
+        response = None
+        resp = srv_foto.getFotosProductosById(id)
+        print(resp)
+        if resp[0] == 'ok':     
+            rows = resp[1]
+            content = {}    
+            json_items = []
+            for result in rows:
+                content = {'url': result[0]}
+                json_items.append(content)
+                content = {}
+            response = jsonify(rows)
+            response.status_code = 200
+        else:
+            response = jsonify(resp[1])
+            response.status_code = 401 if resp[0] == 'warn' else 500
+        print(response)
+        return response
+      except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
 
-def create_product(data_json):
- try:
-        conect = mysql.connect()
 
-        query = "INSERT INTO tbl_productos( producto_direccion, producto_categoria, producto_tienda, producto_nombre, producto_descripcion, producto_precio, producto_cantidad, producto_publicacion, producto_prom_envio, producto_cost_env) VALUES (%s,%s,%s,%s,%s,%s,%s,CURRENT_DATE(),%s,%s)"
-        _direccion = 1
-        _categoria = 1
-        _tienda = 1
-        _nombre = data_json['nombre']
-        _descripcion = data_json['descripcion']
-        _precio = data_json['precio']
-        _cantidad = data_json['cantidad']
-        _duracion = data_json['duracion']
-        _costo = data_json['costo']
-
-        data = (_direccion, _categoria,  _tienda, _nombre,_descripcion, _precio, _cantidad,_duracion, _costo)
-
-        with closing(conect.cursor()) as cursor:
-
-            cursor.execute(query, data)
-            conect.commit()
-
-            return "Producto registrado con éxito"
-
-           
- except Exception as ex:
-        return ('error', repr(ex))
+@app.route('/get_foto/<path:filename>')
+def get_fotoo(filename):
+    file_path = os.getcwd() + '/resources/images/' + filename
+    return send_file(file_path)

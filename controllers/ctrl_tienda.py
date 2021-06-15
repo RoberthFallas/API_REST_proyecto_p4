@@ -37,8 +37,10 @@ def get_productosTiendas(id,nombre=None,id_categoria=None):
         json_items=[]
         content={}
         for resul in resp:
-            content={'producto_id':resul[0],'precio':resul[1],'foto':resul[2],'nombre':resul[3]}
+            content={'producto_id':resul[0],'precio':resul[1],'foto':resul[2],'nombre':resul[3], 'descripcion':resul[4], 'cantidad':resul[5], 
+                    'publicacion':resul[6], 'prom_envio':resul[7], 'cost_envio':resul[8], 'oferta':resul[9], 'pais':resul[10], 'provincia':resul[11], 'canton':resul[12]}
             json_items.append(content)
+
             content={}
         return jsonify(json_items)
 
