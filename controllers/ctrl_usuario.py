@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from flask.json import jsonify, request
 from init import app
 from services import srv_usuario
-from services import srv_direcciones
+from services import srv_direccion
 from services import srv_tiendas
 from services import srv_compradores
 from services import srv_direccion_envio
@@ -29,7 +29,7 @@ def create_usuario():
 
             dir_list = (_json['direcciion_pais'],
                         _json['direccion_provincia'], _json['direccion_canton'])
-            dir_result = srv_direcciones.create_direccion(dir_list)
+            dir_result = srv_direccion.create_direccion(dir_list)
 
             if _json['usuario_tipo'] == 'T':
                 srv_tiendas.create_tienda(
@@ -70,3 +70,21 @@ def save_profile_pictore(user_name):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/get_userdata_by_id/<int:id>', methods=['GET'])
+def get_userdata_by_id(id):
+    try:
+        resp = srv_usuario.get_usuario_by_id(id)
+        if resp[0] is "ok":
+            _json = {"usuario_id": resp[1][0], "usuario_nom_usr":resp[1][1],
+             "usuario_email": resp[1][3], "usuario_foto":resp[1][4],
+             "usuario_telefono": resp[1][5], "usuario_cedula":resp[1][6],
+             "usuario_telefono": resp[1][6], "usuario_cedula":resp[1][7]}
+            return jsonify(_json)
+        else:
+            response = jsonify(resp[1])
+            response.status_code = 204 if resp[0] == 'warn' else 500
+            return response
+    except Exception as ex:
+        print(ex)

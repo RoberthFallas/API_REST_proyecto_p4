@@ -26,4 +26,17 @@ def insert_direccion_producto(json_data):
            
  except Exception as ex:
         return ('error', repr(ex))
+
+
+
+def create_direccion(data_list):
+    try:
+        conect = mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('INSERT INTO tbl_direcciones(direcciion_pais, direccion_provincia, direccion_canton) VALUES(%s, %s, %s)', data_list)
+            conect.commit()
+            resp = ('ok', cursor.lastrowid)
+            return resp
+    except Exception as ex:
+        return ('error', repr(ex))
      
