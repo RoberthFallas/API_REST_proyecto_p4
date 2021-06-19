@@ -80,7 +80,7 @@ def get_userdata_by_id(id):
             _json = {"usuario_id": resp[1][0], "usuario_nom_usr":resp[1][1],
              "usuario_email": resp[1][3], "usuario_foto":resp[1][4],
              "usuario_telefono": resp[1][5], "usuario_cedula":resp[1][6],
-             "usuario_telefono": resp[1][6], "usuario_cedula":resp[1][7]}
+             "usuario_nombre_compl": resp[1][7], "usuario_tipo":resp[1][8]}
             return jsonify(_json)
         else:
             response = jsonify(resp[1])

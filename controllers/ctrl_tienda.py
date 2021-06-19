@@ -67,3 +67,26 @@ def get_productoSelecionado(id):
              content={}
          return jsonify(json_items)
 
+
+@app.route('/get_tienda_data_by_user_id/<int:id>')  
+def get_tienda_data_by_user_id(id):
+    try:
+        resp = svr_tienda.get_tienda_data_by_user_id(id)
+        if resp[0] is "ok":
+            _json = {"usuario_id": resp[1][0], "nombre_usuario":resp[1][1],
+                    "usuario_email": resp[1][2], "usuario_foto":resp[1][3],
+                    "usuario_telefono": resp[1][4], "usuario_cedula":resp[1][5],
+                    "usuario_nombre_compl": resp[1][6], "usuario_tipo":resp[1][7],
+                    "tienda_id": resp[1][8], "tienda_descripcion":resp[1][9],
+                    "direccion_id": resp[1][10], "direccion_pais":resp[1][11],
+                    "direccion_provincia": resp[1][12], "direccion_canton":resp[1][13]
+                    }
+            r = jsonify(_json)        
+            return jsonify(_json)
+        else:
+            response = jsonify(resp[1])
+            response.status_code = 204 if resp[0] == 'warn' else 500
+            return response
+    except Exception as ex:
+        print(ex)
+
