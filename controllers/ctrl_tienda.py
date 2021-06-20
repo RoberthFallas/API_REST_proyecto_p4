@@ -99,21 +99,27 @@ def edit_tienda():
     try:
         str_data = request.form['string_data']
         _json = json.loads(str_data)
-        user_srv_list = (_json['usuario_nom_usr'], _json['usuario_email'], 
-            ctrl_usuario.update_profile_pictore(request.files.get('file'), _json['usuario_nom_usr'], _json['usuario_foto']),  
-            _json['usuario_telefono'], _json['usuario_cedula'], _json['usuario_nombre_compl'], _json['usuario_id'])
         
-        srv_usuario.update_user(user_srv_list)
+        if ctrl_usuario.check_update_data(_json['usuario_id'], _json['usuario_cedula'], _json['usuario_nom_usr']):
+            user_srv_list = (_json['usuario_nom_usr'], _json['usuario_email'], 
+                ctrl_usuario.update_profile_pictore(request.files.get('file'), _json['usuario_nom_usr'], _json['usuario_foto']),  
+                _json['usuario_telefono'], _json['usuario_cedula'], _json['usuario_nombre_compl'], _json['usuario_id'])
+            
+            srv_usuario.update_user(user_srv_list)
 
-        tienda_srv_list = (_json['tienda_descripcion'], _json['tienda_id'])
-        svr_tienda.update_tienda(tienda_srv_list)
+            tienda_srv_list = (_json['tienda_descripcion'], _json['tienda_id'])
+            svr_tienda.update_tienda(tienda_srv_list)
 
-        direccion_srv_list = (_json['direccion_pais'], _json['direccion_provincia'], _json['direccion_canton'], _json['direccion_id'])
-        srv_direccion.update_direccion(direccion_srv_list)
-        
-        if _json['usuario_contrasenna']:
-            srv_usuario.change_password(_json['usuario_contrasenna'], _json['usuario_id'])
-        return jsonify('Los datos de tu tienda han sido actualizados')
+            direccion_srv_list = (_json['direccion_pais'], _json['direccion_provincia'], _json['direccion_canton'], _json['direccion_id'])
+            srv_direccion.update_direccion(direccion_srv_list)
+            
+            if _json['usuario_contrasenna']:
+                srv_usuario.change_password(_json['usuario_contrasenna'], _json['usuario_id'])
+            return jsonify('Los datos de tu tienda han sido actualizados')
+        else:
+            response = jsonify("El nombre de usuario o cédula que has ingresado ya está en uso.")
+            response.status_code = 409
+            return response
     except Exception as ex:
         print(ex)
 

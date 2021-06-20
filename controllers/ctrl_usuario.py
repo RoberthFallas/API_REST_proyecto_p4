@@ -1,4 +1,5 @@
 import os
+import random
 from flask import json
 from werkzeug.utils import secure_filename
 from flask.json import jsonify, request
@@ -41,8 +42,7 @@ def create_usuario():
             response = jsonify("Usuario creado de manera exitosa")
             return response
         else:
-            response = jsonify(
-                "El nombre de usuario o cédula que has ingresado ya están en uso.")
+            response = jsonify("El nombre de usuario o cédula que has ingresado ya está en uso.")
             response.status_code = 409
             return response
     except Exception as e:
@@ -51,6 +51,10 @@ def create_usuario():
 
 def check_user_data(cedula, nombre_usuario):
     counted = srv_usuario.check_user_data((cedula, nombre_usuario))
+    return counted[1] == 0
+
+def check_update_data(id, cedula, nombre_usuario):
+    counted = srv_usuario.check_update_data((cedula, nombre_usuario, id))
     return counted[1] == 0
 
 
@@ -73,7 +77,7 @@ def update_profile_pictore(file ,user_name, last_pic_name):
     else:
         try:
             if allowed_file(file.filename):
-                filname = secure_filename(user_name + '.' + file.filename.rsplit('.', 1)[1].lower())
+                filname = secure_filename(user_name + str(random.randrange(1000)) + '.' + file.filename.rsplit('.', 1)[1].lower())
                 os.remove(os.getcwd() + PROFILES_FOLDER + last_pic_name)
                 file.save(os.getcwd() + PROFILES_FOLDER + filname)
                 return filname

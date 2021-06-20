@@ -44,6 +44,18 @@ def check_user_data(datos):
         except Exception as ex:
             return ('error', repr(ex))
 
+def check_update_data(datos):
+    with closing(mysql.connect().cursor()) as cursor:
+        try:
+            cursor.execute('SELECT COUNT(u.usuario_id) FROM tbl_usuarios u '
+            'WHERE (u.usuario_cedula = %s OR u.usuario_nom_usr = %s) '
+            'AND u.usuario_id <> %s', datos)
+            rows = cursor.fetchone()
+            resp = ('ok', rows[0])
+            return resp
+        except Exception as ex:
+            return ('error', repr(ex))
+
 
 def get_usuario_by_id(id):
         with closing(mysql.connect().cursor()) as cursor:
