@@ -1,7 +1,11 @@
 from flask import json, jsonify
+from flask.json import request
 from werkzeug.wrappers import response
 from init import app
 from services import svr_tienda
+from services import srv_usuario
+from services import srv_direccion
+from controllers import ctrl_usuario
 
 @app.route('/get_tiendas/')
 def get_Tiendas():
@@ -87,6 +91,29 @@ def get_tienda_data_by_user_id(id):
             response = jsonify(resp[1])
             response.status_code = 204 if resp[0] == 'warn' else 500
             return response
+    except Exception as ex:
+        print(ex)
+
+@app.route('/edit_tienda', methods=['PUT'])
+def edit_tienda():
+    try:
+        str_data = request.form['string_data']
+        _json = json.loads(str_data)
+        user_srv_list = (_json['usuario_nom_usr'], _json['usuario_email'], 
+            ctrl_usuario.update_profile_pictore(request.files.get('file'), _json['usuario_nom_usr'], _json['usuario_foto']),  
+            _json['usuario_telefono'], _json['usuario_cedula'], _json['usuario_nombre_compl'], _json['usuario_id'])
+        
+        srv_usuario.update_user(user_srv_list)
+
+        tienda_srv_list = (_json['tienda_descripcion'], _json['tienda_id'])
+        svr_tienda.update_tienda(tienda_srv_list)
+
+        direccion_srv_list = (_json['direccion_pais'], _json['direccion_provincia'], _json['direccion_canton'], _json['direccion_id'])
+        srv_direccion.update_direccion(direccion_srv_list)
+        
+        if _json['usuario_contrasenna']:
+            srv_usuario.change_password(_json['usuario_contrasenna'], _json['usuario_id'])
+        return jsonify('Los datos de tu tienda han sido actualizados')
     except Exception as ex:
         print(ex)
 

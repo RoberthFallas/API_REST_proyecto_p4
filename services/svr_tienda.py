@@ -88,3 +88,15 @@ def get_tienda_data_by_user_id(id):
                 return ('error', 'Se ha cancelado la busqueda debido a que los resultados obtenidos contenian errores')
     except Exception as ex:
         return ('error',repr(ex))
+
+
+def update_tienda(datos):
+    try:
+        conect = mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('UPDATE tbl_tiendas SET tienda_descripcion = %s WHERE tienda_id = %s', datos)
+            conect.commit()
+            resp = ('ok', '')
+            return resp
+    except Exception as ex:
+        return ('error', repr(ex))

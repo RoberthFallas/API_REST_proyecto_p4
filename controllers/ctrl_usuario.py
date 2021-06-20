@@ -67,6 +67,21 @@ def save_profile_pictore(user_name):
     return 'unknow.jpg'
 
 
+def update_profile_pictore(file ,user_name, last_pic_name):
+    if file is None:
+        return last_pic_name
+    else:
+        try:
+            if allowed_file(file.filename):
+                filname = secure_filename(user_name + '.' + file.filename.rsplit('.', 1)[1].lower())
+                os.remove(os.getcwd() + PROFILES_FOLDER + last_pic_name)
+                file.save(os.getcwd() + PROFILES_FOLDER + filname)
+                return filname
+        except Exception:
+            pass
+    return 'unknow.jpg'
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
