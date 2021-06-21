@@ -2,6 +2,7 @@ import random
 from init import app
 from flask.json import jsonify, request
 from services import srv_formas_pago
+from services import srv_compradores
 
 
 @app.route('/get_formas_pago_by_user_id/<int:id>', methods=['GET'])
@@ -28,7 +29,7 @@ def get_metodos_pago_by_user_id(id):
 def create_forma_pago():
     try:
         _json = request.get_json(force=True)
-        comprador_id = srv_formas_pago.get_comprador_id_by_user_id(_json['usuario_id'])
+        comprador_id = srv_compradores.get_comprador_id_by_user_id(_json['usuario_id'])
         if comprador_id[0] is 'ok':
 
             array = (comprador_id[1], _json['pago_nomb_duenno'],_json['pago_numero_tarjeta'],_json['pago_cvv'],
