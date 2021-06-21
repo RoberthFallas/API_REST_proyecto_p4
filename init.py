@@ -27,3 +27,7 @@ from controllers import ctrl_tienda
 from controllers import ctrl_fotos
 from  controllers import  ctrl_experiencia
 from  controllers import  ctrl_comentarios
+from controllers import  ctrl_suscripciones
+from controllers import  ctrl_reporteAbuso
+from controllers import  ctrl_deseo
+from controllers import  ctrl_carrito

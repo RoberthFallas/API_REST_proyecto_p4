@@ -10,7 +10,7 @@ def get_Tiendas():
         json_items=[]
         content={}
         for resul in resp:
-            content={'tienda_id':resul[0],'descripcion':resul[1],'nombre':resul[2],'pais':resul[3],'provincia':resul[4],'canton':resul[5]}
+            content={'tienda_id':resul[0],'descripcion':resul[1],'nombre':resul[2],'pais':resul[3],'provincia':resul[4],'canton':resul[5],'foto':resul[6]}
             json_items.append(content)
             content={}
         return jsonify(json_items)
