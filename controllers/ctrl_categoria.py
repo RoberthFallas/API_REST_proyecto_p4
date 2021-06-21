@@ -1,4 +1,4 @@
-from flask import json, jsonify
+from flask import json, jsonify, request
 from init import app
 from services import srv_categoria
 
@@ -30,4 +30,27 @@ def get_categorias():
         response = jsonify(repr(ex))
         response.status_code = 500
         return response 
-  
+
+
+@app.route('/create_categoria', methods=['POST'])
+def create_categoria():
+    try:
+        _json = request.get_json(force=True) 
+        resp = srv_categoria.create_cateorias(_json)
+
+        print(resp)
+        if(resp == 'ok'):
+            response = jsonify('Categoria guardada éxitosamente')
+            response.status_code = 200
+            return response
+
+        response = jsonify('No se pudo guardar la categoría')
+        response.status_code = 401
+        return response
+
+    except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
+
+
