@@ -12,3 +12,32 @@ def get_miCarrito(idComprador):
             return (result)
     except Exception as ex:
         return ('error', repr(ex))
+
+def agregar_carrito(json_data):
+   try:
+        conect = mysql.connect()
+        query = "INSERT INTO  carrito(comprador_id,producto_id,cant) VALUES (%s,%s,%s)"
+        _idCliente= json_data['idComprador']
+        _idProducto = json_data['idProducto']
+        _cantidad=json_data['cantidad']
+
+        data = (_idCliente,_idProducto,_cantidad)
+        with closing(conect.cursor()) as cursor:
+            cursor.execute(query, data)
+            conect.commit()
+            id_insert =  cursor.lastrowid 
+            resp=('ok', id_insert)
+        return resp
+   except  Exception as ex:
+        return ('error', repr(ex))
+
+def eliminar_carrito(idComprador,idProducto):
+    try:
+        conect = mysql.connect()
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('DELETE FROM carrito where carrito.comprador_id=%s and carrito.producto_id=%s', (idComprador,idProducto))
+            conect.commit()
+            res=jsonify('Producto eliminado del carrito')
+            return res
+    except Exception as ex:
+        return ('error', repr(ex))
