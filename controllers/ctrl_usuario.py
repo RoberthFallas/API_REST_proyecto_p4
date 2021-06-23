@@ -1,10 +1,11 @@
 import os
+import random
 from flask import json
 from werkzeug.utils import secure_filename
 from flask.json import jsonify, request
 from init import app
 from services import srv_usuario
-from services import srv_direcciones
+from services import srv_direccion
 from services import srv_tiendas
 from services import srv_compradores
 from services import srv_direccion_envio
@@ -29,7 +30,7 @@ def create_usuario():
 
             dir_list = (_json['direcciion_pais'],
                         _json['direccion_provincia'], _json['direccion_canton'])
-            dir_result = srv_direcciones.create_direccion(dir_list)
+            dir_result = srv_direccion.create_direccion(dir_list)
 
             if _json['usuario_tipo'] == 'T':
                 srv_tiendas.create_tienda(
@@ -41,8 +42,7 @@ def create_usuario():
             response = jsonify("Usuario creado de manera exitosa")
             return response
         else:
-            response = jsonify(
-                "El nombre de usuario o cédula que has ingresado ya están en uso.")
+            response = jsonify("El nombre de usuario o cédula que has ingresado ya está en uso.")
             response.status_code = 409
             return response
     except Exception as e:
@@ -51,6 +51,10 @@ def create_usuario():
 
 def check_user_data(cedula, nombre_usuario):
     counted = srv_usuario.check_user_data((cedula, nombre_usuario))
+    return counted[1] == 0
+
+def check_update_data(id, cedula, nombre_usuario):
+    counted = srv_usuario.check_update_data((cedula, nombre_usuario, id))
     return counted[1] == 0
 
 
@@ -67,6 +71,39 @@ def save_profile_pictore(user_name):
     return 'unknow.jpg'
 
 
+def update_profile_pictore(file ,user_name, last_pic_name):
+    if file is None:
+        return last_pic_name
+    else:
+        try:
+            if allowed_file(file.filename):
+                filname = secure_filename(user_name + str(random.randrange(1000)) + '.' + file.filename.rsplit('.', 1)[1].lower())
+                os.remove(os.getcwd() + PROFILES_FOLDER + last_pic_name)
+                file.save(os.getcwd() + PROFILES_FOLDER + filname)
+                return filname
+        except Exception:
+            pass
+    return 'unknow.jpg'
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/get_userdata_by_id/<int:id>', methods=['GET'])
+def get_userdata_by_id(id):
+    try:
+        resp = srv_usuario.get_usuario_by_id(id)
+        if resp[0] is "ok":
+            _json = {"usuario_id": resp[1][0], "usuario_nom_usr":resp[1][1],
+             "usuario_email": resp[1][3], "usuario_foto":resp[1][4],
+             "usuario_telefono": resp[1][5], "usuario_cedula":resp[1][6],
+             "usuario_nombre_compl": resp[1][7], "usuario_tipo":resp[1][8]}
+            return jsonify(_json)
+        else:
+            response = jsonify(resp[1])
+            response.status_code = 204 if resp[0] == 'warn' else 500
+            return response
+    except Exception as ex:
+        print(ex)

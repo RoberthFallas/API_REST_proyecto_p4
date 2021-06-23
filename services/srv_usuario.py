@@ -35,22 +35,6 @@ def create_compradores(datos):
 
 
 def check_user_data(datos):
-    # try:
-    #     cur.execute('SELECT p.id_proveedor, p.codigo, p.nombre, p.telefono, p.correo, COUNT(pr.id) as nm_prodcs FROM tbl_proveedores p ' 
-    #     +'LEFT JOIN tbl_productos pr ON pr.id_provedor = p.id_proveedor '
-    #     +'WHERE p.id_proveedor <> 1 '
-    #     +'GROUP BY p.codigo')
-        
-    #     json_items = []
-    #     content = {}
-
-    #     for result in rows:
-    #         content = {'id_proveedor':result[0], 'codigo': result[1], 'nombre': result[2], 'telefono': result[3], 'correo': result[4], 'np_prodcs': result[5]}
-    #         json_items.append(content)
-    #         content = {}
-    #     return jsonify(json_items)
-    # except Exception as ex:
-    #     print(ex)
     with closing(mysql.connect().cursor()) as cursor:
         try:
             cursor.execute('SELECT COUNT(u.usuario_id) FROM tbl_usuarios u WHERE (u.usuario_cedula = %s OR u.usuario_nom_usr = %s)', datos)
@@ -60,3 +44,60 @@ def check_user_data(datos):
         except Exception as ex:
             return ('error', repr(ex))
 
+def check_update_data(datos):
+    with closing(mysql.connect().cursor()) as cursor:
+        try:
+            cursor.execute('SELECT COUNT(u.usuario_id) FROM tbl_usuarios u '
+            'WHERE (u.usuario_cedula = %s OR u.usuario_nom_usr = %s) '
+            'AND u.usuario_id <> %s', datos)
+            rows = cursor.fetchone()
+            resp = ('ok', rows[0])
+            return resp
+        except Exception as ex:
+            return ('error', repr(ex))
+
+
+def get_usuario_by_id(id):
+        with closing(mysql.connect().cursor()) as cursor:
+            try:
+                count = cursor.execute('select u.* from tbl_usuarios u where u.usuario_id = %s', (id,))
+                if count is 1:
+                    row = cursor.fetchone()
+                    resp = ('ok', row)
+                    return resp
+                elif count is 0:
+                    return ('warn', 'Sin coinsidencias para el parámetro de busqueda')
+                else:
+                    return ('error', 'Se ha cancelado la busqueda debido a que los resultados obtenidos contenian errores')
+            except Exception as ex:
+                return ('error', repr(ex))
+
+
+def update_user(datos):
+    try:
+        conect = mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('UPDATE tbl_usuarios '
+                'SET usuario_nom_usr = %s, usuario_email = %s, usuario_foto = %s, '
+                'usuario_telefono = %s, usuario_cedula = %s, usuario_nombre_compl = %s '
+                'WHERE usuario_id = %s', datos)
+            conect.commit()
+            resp = ('ok', '')
+            return resp
+    except Exception as ex:
+        return ('error', repr(ex))
+
+
+
+def change_password(newPassword, user_id):
+    try:
+        hash = generate_password_hash(newPassword)
+
+        conect = mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('UPDATE tbl_usuarios SET usuario_contrasenna = %s WHERE usuario_id = %s', (hash, user_id))
+            conect.commit()
+            resp = ('ok', '')
+            return resp
+    except Exception as ex:
+        return ('error', repr(ex))

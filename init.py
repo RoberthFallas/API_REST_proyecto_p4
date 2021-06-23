@@ -25,3 +25,6 @@ from controllers import ctrl_producto
 from controllers import ctrl_categoria
 from controllers import ctrl_tienda
 from controllers import ctrl_fotos
+from controllers import ctrl_comprador
+from controllers import ctrl_formas_pago
+from controllers import crtl_direccion_envio
