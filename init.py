@@ -25,6 +25,13 @@ from controllers import ctrl_producto
 from controllers import ctrl_categoria
 from controllers import ctrl_tienda
 from controllers import ctrl_fotos
+from  controllers import  ctrl_experiencia
+from  controllers import  ctrl_comentarios
+from controllers import  ctrl_suscripciones
+from controllers import  ctrl_reporteAbuso
+from controllers import  ctrl_deseo
+from controllers import  ctrl_carrito
+from controllers import  ctrl_compra
 from controllers import ctrl_comprador
 from controllers import ctrl_formas_pago
 from controllers import crtl_direccion_envio

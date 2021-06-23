@@ -21,3 +21,5 @@ def get_categorias():
  except Exception as ex:
         return ('error', repr(ex))
      
+
+
