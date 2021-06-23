@@ -31,3 +31,4 @@ from controllers import  ctrl_suscripciones
 from controllers import  ctrl_reporteAbuso
 from controllers import  ctrl_deseo
 from controllers import  ctrl_carrito
+from controllers import  ctrl_compra
