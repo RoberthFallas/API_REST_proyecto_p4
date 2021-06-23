@@ -24,3 +24,32 @@ def get_DirrecionEnvio(idCliente):
             json_items.append(content)
             content={}
         return jsonify(json_items)
+
+@app.route('/get_comprar/<int:idCliente>/<int:idFormaPago>')
+def get_comprar(idCliente,idFormaPago):
+    resp=srv_compra.getCantidadProducto(idCliente)
+    cantidadExiste=True
+    if resp!='error':   
+        for resul in resp:
+            if resul[0]>resul[1]:
+               cantidadExiste=False
+    if(cantidadExiste==True):
+        montoTotal=0
+        for costos in resp:
+            montoTotal=montoTotal+costos[0]*costos[2]
+        formPago=srv_compra.getFormaPagoSeleccionada(idCliente,idFormaPago)
+        aux=0
+        for formPag in formPago:
+            aux=formPag[0]
+        if(aux>montoTotal):               
+          resp = jsonify('Comentarios Guardado.'+montoTotal)
+          resp.status_code = 200
+          return resp
+        else:
+            resp = jsonify('Comentarios Guardado.'+montoTotal)
+            resp.status_code = 200
+            return resp 
+    else:
+       resp = jsonify('Error.')
+       resp.status_code = 200
+       return resp
