@@ -27,26 +27,32 @@ def get_DirrecionEnvio(idCliente):
 
 @app.route('/get_comprar/<int:idCliente>/<int:idFormaPago>')
 def get_comprar(idCliente,idFormaPago):
+    'Consultar si existe la cantidad solicitada del producto'
     resp=srv_compra.getCantidadProducto(idCliente)
     cantidadExiste=True
     if resp!='error':   
+        'Revisar la cantidad de los productos'
         for resul in resp:
             if resul[0]>resul[1]:
                cantidadExiste=False
     if(cantidadExiste==True):
-        montoTotal=0
+        subTotal=0
+        costoEnvio=0
+        'Calcular costos'
         for costos in resp:
-            montoTotal=montoTotal+costos[0]*costos[2]
+            if(costos[3]>0):
+                subTotal=subTotal+costos[0]*costos[3]
+                costoEnvio=costoEnvio+costos[4]
+            else:
+                subTotal=subTotal+costos[0]*costos[2]
+                costoEnvio=costoEnvio+costos[4]
+        'Consultar si la forma de pago tiene el monto para pagar'
         formPago=srv_compra.getFormaPagoSeleccionada(idCliente,idFormaPago)
-        aux=0
-        for formPag in formPago:
-            aux=formPag[0]
-        if(aux>montoTotal):               
-          resp = jsonify('Comentarios Guardado.'+montoTotal)
-          resp.status_code = 200
+        if(formPago[1][0]>subTotal+costoEnvio):               
+          factura=srv_compra.insertarFactura(idCliente,idFormaPago,subTotal,subTotal+costoEnvio)
           return resp
         else:
-            resp = jsonify('Comentarios Guardado.'+montoTotal)
+            resp = jsonify('Error')
             resp.status_code = 200
             return resp 
     else:
