@@ -66,11 +66,11 @@ def delele_product(id):
             return response
 
         else:
-            response = jsonify(resp)
+            response = jsonify("No se puedo eliminar, intente de nuevo")
             response.status_code = 401 
         return response
  except Exception as ex:
-        response = jsonify(repr(ex))
+        response = jsonify(repr("Hubo problemas internos"))
         response.status_code = 500
         return response 
 

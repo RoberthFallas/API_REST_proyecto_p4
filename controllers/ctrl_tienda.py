@@ -136,7 +136,7 @@ def get_ventas_between(startDate, endDate, id):
         content={}
         if(resp[0] == 'ok'):
             for resul in resp[1]:
-                content={'nombre':resul[0],'categoria':resul[1],'precio_estimado':resul[2],'precio_oferta':resul[3],'fecha':resul[4], 'cantidad_vendida':resul[5],'total':resul[6]}
+                content={'nombre':resul[0],'categoria':resul[1],'precio_estimado':resul[2],'precio_oferta':resul[3],'fecha_publicacion':resul[4], 'cantidad_vendida':resul[5],'total':resul[6]}
                 json_items.append(content)
                 content={}
             return jsonify(json_items)
