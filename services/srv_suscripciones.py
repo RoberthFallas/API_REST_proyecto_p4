@@ -50,7 +50,7 @@ def get_miSuscripcion(idComprador):
     try:
         conect = mysql.connect()
         with  closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT t.tienda_id,u.usuario_nombre_compl,u.usuario_foto FROM tbl_compradores c inner JOIN tbl_subscripciones s on s.subsc_cliente=c.comprador_id INNER JOIN tbl_tiendas t on t.tienda_id=s.subsc_tienda inner JOIN tbl_usuarios u on u.usuario_id=t.tienda_id where c.comprador_id=%s',(idComprador))
+            cursor.execute('SELECT t.tienda_id,u.usuario_nombre_compl,u.usuario_foto from tbl_compradores c INNER JOIN tbl_subscripciones s on c.comprador_id=s.subsc_cliente INNER join tbl_tiendas t on t.tienda_id=s.subsc_tienda inner join tbl_usuarios u on u.usuario_id=t.tienda_usuario WHERE c.comprador_id=%s',(idComprador))
             result=cursor.fetchall()
             return (result)
     except Exception as ex:
