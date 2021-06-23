@@ -4,8 +4,8 @@ from werkzeug.utils import secure_filename
 from services import srv_comentarios
 
 
-@app.route('/get_comentario/<int:idProducto>')        
-def get_comentario(idProducto):
+@app.route('/get_comentario2/<int:idProducto>')        
+def get_comentario2(idProducto):
         resp=srv_comentarios.get_comentarios(idProducto)
         json_items=[]
         content={}
@@ -17,8 +17,8 @@ def get_comentario(idProducto):
 
 
 
-@app.route('/agregar_comentario',methods=['POST']) 
-def agregar_comentario():
+@app.route('/agregar_comentario2',methods=['POST']) 
+def agregar_comentario2():
      _json=request.get_json(force=True)
      resp=srv_comentarios.set_comentario(_json)
      resp = jsonify('Comentarios Guardado.')

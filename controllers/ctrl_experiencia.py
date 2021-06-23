@@ -14,8 +14,8 @@ def get_calificacionProducto(idUsuario,idProducto):
             content={}
         return jsonify(json_items)
 
-@app.route('/get_comprador/<int:id>')        
-def get_comprador(id):
+@app.route('/get_comprador2/<int:id>')        
+def get_comprador2(id):
         resp=srv_experiencia.get_comprador(id)
         json_items=[]
         content={}
