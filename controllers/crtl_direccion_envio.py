@@ -20,7 +20,7 @@ def create_direccion_envio():
 
             return jsonify("Dirección de envío guardada")
         else:
-            response = jsonify(resp[1])
+            response = jsonify('Un error inesperado ha impedido guardar tu dirección de envío.')
             response.status_code = 409
             return response
     except Exception as ex:
