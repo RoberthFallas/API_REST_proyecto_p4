@@ -100,3 +100,24 @@ def update_tienda(datos):
             return resp
     except Exception as ex:
         return ('error', repr(ex))
+
+def get_subscripciones_by_id(id):
+    try:
+        conect=mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT c.comprador_id , u.usuario_nom_usr, u.usuario_foto FROM tbl_subscripciones t JOIN tbl_compradores c ON c.comprador_id = t.subsc_cliente JOIN tbl_usuarios u ON c.comprador_usuario = u.usuario_id WHERE t.subsc_tienda =%s',(id))
+            result=cursor.fetchall()
+            return ('ok',result)
+    except Exception as ex:
+        return ('error',repr(ex))
+
+def get_ventas_between(startDate, endDate, id):
+
+    try:
+        conect=mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT P.producto_nombre,  ct.categoria_nombre, p.producto_precio, p.producto_oferta, p.producto_publicacion, SUM(detalle_cantidad), SUM(d.detalle_precio_final * d.detalle_cantidad) FROM `tbl_detalle` d JOIN tbl_facturas f ON d.detalle_factura = f.factura_id JOIN tbl_productos p ON p.producto_id = d.detalle_producto JOIN tbl_categorias ct ON ct.categoria_id = p.producto_categoria JOIN tbl_tiendas  t ON T.tienda_id = P.producto_tienda WHERE F.facura_fecha_hora BETWEEN %s AND %s and  t.tienda_id = %s GROUP BY detalle_producto ORDER BY SUM(detalle_cantidad) DESC ',(startDate, endDate, id))
+            result=cursor.fetchall()
+            return ('ok',result)
+    except Exception as ex:
+        return ('error',repr(ex))

@@ -10,6 +10,8 @@ def save_photo(id_producto,name):
         conect = mysql.connect()
 
         query = "INSERT INTO tbl_fotos(foto_producto, foto_url) VALUES (%s, %s)"
+
+        print(query)
       
 
         data = (id_producto, name)

@@ -49,6 +49,30 @@ def create_usuario():
         print(e)
 
 
+@app.route('/get_comprador/<int:id>')
+def get_comprador(id):
+    try:
+        resp = srv_compradores.get_comprador(id)
+
+        print(resp)
+        if(resp[0] == 'ok'):
+            resul = resp[1]
+            content={'nombre_usuario':resul[0], 'email':resul[1], 'foto':resul[2], 'telefono':resul[3], 'nombre_completo':resul[4] }
+         
+            response = jsonify(content)
+            response.status_code = 200
+            return response
+           
+        response = jsonify('No se obtener los datos')
+        response.status_code = 401
+        return response
+
+    except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response     
+
+
 def check_user_data(cedula, nombre_usuario):
     counted = srv_usuario.check_user_data((cedula, nombre_usuario))
     return counted[1] == 0

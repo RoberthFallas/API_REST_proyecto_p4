@@ -1,3 +1,4 @@
+from flask import json
 from pymysql.cursors import Cursor
 from init import mysql
 from contextlib import closing
@@ -19,6 +20,23 @@ def get_categorias():
 
            
  except Exception as ex:
+        return ('error', repr(ex))
+
+
+def create_cateorias(_json):
+     try:
+        conect = mysql.connect()
+
+        query = "INSERT INTO tbl_categorias( categoria_nombre) VALUES (%s)" 
+        data = (_json)
+
+        with closing(conect.cursor()) as cursor:
+
+            cursor.execute(query, data)
+            conect.commit()
+            return ('ok')
+      
+     except Exception as ex:
         return ('error', repr(ex))
      
 

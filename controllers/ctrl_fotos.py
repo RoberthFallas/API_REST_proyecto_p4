@@ -18,7 +18,8 @@ def get_fotos_by_producto(id):
                 content = {'url': result[0]}
                 json_items.append(content)
                 content = {}
-            response = jsonify(rows)
+            
+            response = jsonify(json_items)
             response.status_code = 200
         else:
             response = jsonify(resp[1])
