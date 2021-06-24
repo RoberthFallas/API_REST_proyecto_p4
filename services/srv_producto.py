@@ -201,3 +201,30 @@ def get_cant_deseos(id):
      
 
   
+
+def get_ofertas(categoria, precio_menor, precio_mayor, fecha_inicio, fecha_final):
+  try:
+    conect = mysql.connect()
+    with closing(conect.cursor()) as cursor:
+      if categoria !=None and (precio_menor==None and precio_mayor==None) and (fecha_inicio == None and fecha_final == None) :
+        cursor.execute('SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta, c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria  JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda  JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE  p.producto_oferta > 0 and  c.categoria_id =%s',(categoria))
+      elif (precio_menor!=None and precio_mayor!=None) and categoria == None and (fecha_inicio == None and fecha_final == None)  :
+        cursor.execute("SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta, c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria  JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda  JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE p.producto_oferta > 0 and p.producto_oferta BETWEEN %s and %s",(precio_menor, precio_mayor))
+      elif (fecha_inicio != None and fecha_final != None) and (precio_menor==None and precio_mayor==None) and categoria == None :
+        cursor.execute("SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta, c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE p.producto_oferta > 0 and p.producto_publicacion BETWEEN %s and %s",(fecha_inicio,fecha_final))
+      
+      elif categoria !=None and (precio_menor!=None and precio_mayor!=None) and (fecha_inicio == None and fecha_final == None) :
+        cursor.execute('SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta, c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria  JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda  JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE p.producto_oferta > 0 and c.categoria_id  = %s and  p.producto_oferta BETWEEN %s and %s',(categoria, precio_menor, precio_mayor))
+      elif categoria !=None and (precio_menor==None and precio_mayor==None) and (fecha_inicio != None and fecha_final != None) :
+        cursor.execute('SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta, c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria  JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda  JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE p.producto_oferta > 0 and c.categoria_id  = %s and  p.producto_publicacion BETWEEN %s and %s',(categoria, fecha_inicio, fecha_final))
+
+      elif (precio_menor!=None and precio_mayor!=None) and categoria == None and (fecha_inicio != None and fecha_final != None)  :
+        cursor.execute("SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta, c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria  JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda  JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE p.producto_oferta > 0 and p.producto_oferta BETWEEN %s and %s  and p.producto_publicacion BETWEEN %s and %s",(precio_menor, precio_mayor, fecha_inicio, fecha_final))
+      else:
+        cursor.execute("SELECT p.producto_publicacion, p.producto_nombre,p.producto_descripcion, p.producto_precio, p.producto_oferta,  c.categoria_nombre, u.usuario_nombre_compl FROM tbl_productos p JOIN tbl_categorias c ON c.categoria_id = p.producto_categoria  JOIN tbl_tiendas t ON t.tienda_id = p.producto_tienda  JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE p.producto_oferta > 0 and c.categoria_id  = %s and p.producto_oferta BETWEEN  %s and %s and p.producto_publicacion BETWEEN %s and %s",(categoria, precio_menor, precio_mayor, fecha_inicio, fecha_final))
+      
+      result=cursor.fetchall()
+
+      return ('ok', result)
+  except  Exception as ex:
+        return ('error',repr(ex))
