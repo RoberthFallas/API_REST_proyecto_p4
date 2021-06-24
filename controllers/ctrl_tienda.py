@@ -209,3 +209,23 @@ def edit_tienda():
     except Exception as ex:
         print(ex)
 
+
+
+
+@app.route('/get_informacion_tienda/<int:id>')    
+def get_informacion_tienda(id):
+    try: 
+        resp=svr_tienda.get_informacion_tienda(id)
+        if resp[0] == 'ok':
+            _json={
+                    'nombre':resp[1][0],'telefono':resp[1][1],'correo':resp[1][2],'descripcion':resp[1][3],'pais':resp[1][4],
+                    'provincia':resp[1][5],'canton':resp[1][6]
+                }
+            return jsonify(_json)
+        else:
+            response = jsonify(resp[1])
+            response.status_code = 204 if resp[0] == 'warn' else 500
+            return response
+    except Exception as ex:
+        print(ex)
+    

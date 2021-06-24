@@ -198,6 +198,25 @@ def get_cant_deseos(id):
             return ('ok',result)
   except Exception as ex:
         return ('error',repr(ex))
+
+
+def update_product_cantidad(idCantidad,idProducto): #esta en desarrollo
+  try:
+          conect = mysql.connect()
+
+          query = "UPDATE tbl_productos SET producto_cantidad=%s WHERE producto_id = %s"
+
+          data = (idCantidad,idProducto)
+
+          with closing(conect.cursor()) as cursor:
+
+              cursor.execute(query, data)
+              conect.commit()
+              return ('ok')
+
+            
+  except Exception as ex:
+          return ('error', repr(ex))  
      
 
   
