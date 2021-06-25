@@ -64,4 +64,17 @@ def hide_forma_pago_by_id():
     except Exception as ex:
         print(ex)
 
+@app.route('/agregar_bonificacion_by_id', methods=['PUT'])
+def agregar_bonificacion():
+    try:
+        _json = request.get_json(force=True)
+        resp = srv_formas_pago.agregar_bonificacion(_json['pago_id'])
+        if resp[0] is 'ok':
+            return jsonify('Bonificación remunerada')
+        else:
+            response = jsonify(resp[1])
+            response.status_code = 409
+            return response
+    except Exception as ex:
+        print(ex)
 

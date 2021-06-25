@@ -129,11 +129,10 @@ def update_product():
 @app.route('/get_product_by_id/<int:id>')
 def get_product_by_id(id):
  try:
-        print("ddentro de get by id")
+      
         response = None
-        
+    
         resp = srv_producto.get_product_by_id(id)
-        print(resp)
     
         if resp[0] == 'ok':
             rows = resp[1]
