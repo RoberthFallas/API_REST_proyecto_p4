@@ -30,7 +30,7 @@ def getCantidadProducto(idComprador):
     try:
         conect = mysql.connect()
         with  closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT ca.carrito_cant,p.producto_cantidad,p.producto_precio,p.producto_oferta,p.producto_cost_env,p.producto_id from tbl_carritos ca INNER JOIN tbl_compradores c on c.comprador_id=ca.comprador_id inner JOIN tbl_productos p on p.producto_id=ca.producto_id WHERE c.comprador_id=%s',(idComprador))
+            cursor.execute('SELECT ca.carrito_cant,p.producto_cantidad,p.producto_precio,p.producto_oferta,p.producto_cost_env,p.producto_id,p.producto_nombre from tbl_carritos ca INNER JOIN tbl_compradores c on c.comprador_id=ca.comprador_id inner JOIN tbl_productos p on p.producto_id=ca.producto_id WHERE c.comprador_id=%s',(idComprador))
             result=cursor.fetchall()
             return (result)
     except Exception as ex:

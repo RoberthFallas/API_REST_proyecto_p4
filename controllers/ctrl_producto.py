@@ -267,7 +267,7 @@ def get_productosMasVendidos():
      content={}
      for resul in resp:
             content={'producto_id':resul[0],'nombre':resul[1],'descripcion':resul[2],'precio':resul[3],'cantidad':resul[4],
-                  'foto':resul[5],'vendidos':resul[6],'cost_envio':resul[7],'prom_envio':resul[8],'oferta':resul[9]}
+                  'foto':resul[5],'vendidos':resul[6],'cost_envio':resul[7],'prom_envio':resul[8],'oferta':resul[9],'publicacion':resul[10],'pais':resul[11], 'provincia':resul[12], 'canton':resul[13]}
             json_items.append(content)
             content={}
      return jsonify(json_items)

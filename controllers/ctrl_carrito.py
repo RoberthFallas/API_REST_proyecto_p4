@@ -23,7 +23,12 @@ def agregar_carrito():
         resp.status_code = 200
      else:
          resp=srv_carrito.editar_carritoSuma(_json)
-
+         aux=int(_json['cantidad'])
+         aux2= (resp[0])
+         _json['cantidad']=aux+aux2
+         srv_carrito.editar_carrito(_json)
+         resp = jsonify('producto Editado.')
+         resp.status_code = 200
      return resp
 
 @app.route('/eliminar_carrito/<int:idComprador>/<int:idProducto>',methods=['DELETE']) 

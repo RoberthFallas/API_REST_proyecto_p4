@@ -7,7 +7,7 @@ def get_t():
     try:
         conect = mysql.connect()
         with closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT t.tienda_id,t.tienda_descripcion,u.usuario_nom_usr,d.direcciion_pais,d.direccion_provincia,d.direccion_canton,u.usuario_foto FROM tbl_tiendas t INNER JOIN tbl_usuarios u on t.tienda_usuario=u.usuario_id INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion')
+            cursor.execute('SELECT t.tienda_id,t.tienda_descripcion,u.usuario_nombre_compl,d.direcciion_pais,d.direccion_provincia,d.direccion_canton,u.usuario_foto FROM tbl_tiendas t INNER JOIN tbl_usuarios u on t.tienda_usuario=u.usuario_id INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion WHERE (SELECT COUNT(d.comprador_id) FROM tbl_denuncias d WHERE d.tienda_id = t.tienda_id) < 10 ORDER by (u.usuario_nombre_compl)')
             result = cursor.fetchall()
             return (result)
     except Exception as ex:

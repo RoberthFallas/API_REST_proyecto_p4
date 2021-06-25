@@ -37,6 +37,9 @@ def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
         for resul in resp:
             if resul[0]>resul[1]:
                cantidadExiste=False
+               r = jsonify('La compra sobrepasa el monto',resul[6])
+               r.status_code = 401
+               return(r)              
     if(cantidadExiste==True):
         subTotal=0
         costoEnvio=0
@@ -64,25 +67,25 @@ def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
                             srv_producto.update_product_cantidad(detalle[1]-detalle[0],detalle[5])
                         else:
                             costo=detalle[0]*detalle[2]
-                            srv_compra.agregarDetalle(resul[5],factura[1],detalle[0],costo)
+                            srv_compra.agregarDetalle(detalle[5],factura[1],detalle[0],costo)
                             srv_carrito.eliminar_carrito(idCliente,detalle[5])
                             srv_producto.update_product_cantidad(detalle[1]-detalle[0],detalle[5])
                     respPago = jsonify('ok',factura[1])
                     return respPago  
                 else:
                         resp = jsonify('La compra sobrepasa el monto')
-                        resp.status_code = 200
+                        resp.status_code = 401
                         return resp  
             else:
                  resp = jsonify('El cvv no concuerda')
-                 resp.status_code = 200
+                 resp.status_code = 401
                  return resp          
         else:
             resp = jsonify('Error forma de pago mala')
-            resp.status_code = 200
+            resp.status_code = 401
             return resp 
     else:
        resp = jsonify('Error cantida producto.')
-       resp.status_code = 200
+       resp.status_code = 401
        return resp
 

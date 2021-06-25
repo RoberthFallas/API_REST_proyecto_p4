@@ -67,18 +67,18 @@ def editar_carritoSuma(json_data):
         _cantidad=json_data['cantidad']
         conect = mysql.connect()
         with  closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT t.cant FROM tbl_carritos t where t.comprador_id=%s and t.producto_id=%s',(_idCliente,_idProducto))
-            result=cursor.fetchall()
-
-        _cantidad=_cantidad+result[0]
-        query = "UPDATE tbl_carritos set carrito_cant=%s where comprador_id=%s and producto_id=%s"
-        data = (_cantidad,_idCliente,_idProducto)
-        with closing(conect.cursor()) as cursor:
-            cursor.execute(query, data)
-            conect.commit()
-            id_insert =  cursor.lastrowid 
-            resp=('ok', id_insert)
-        return resp
+            cursor.execute('SELECT t.carrito_cant FROM tbl_carritos t where t.comprador_id=%s and t.producto_id=%s',(_idCliente,_idProducto))
+            result=cursor.fetchone()
+            return (result)
+        #_aux=_cantidad+result[0]
+        #query = "UPDATE tbl_carritos set carrito_cant=%s where comprador_id=%s and producto_id=%s"
+        #data = (_cantidad,_idCliente,_idProducto)
+        #with closing(conect.cursor()) as cursor:
+         #   cursor.execute(query, data)
+          #  conect.commit()
+          #  id_insert =  cursor.lastrowid 
+           # resp=('ok', id_insert)
+        #return resp
     except  Exception as ex:
         return ('error', repr(ex))
 
