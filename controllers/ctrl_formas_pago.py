@@ -14,7 +14,7 @@ def get_metodos_pago_by_user_id(id):
 
             for row in resp[1]:
                 json = {'pago_id': row[0], 'propietario': row[1], 'tarjeta': row[2],
-                 'vencimiento': row[3], 'pago_saldo': row[4]}
+                 'vencimiento': row[3].strftime("%m/%d/%Y"), 'pago_saldo': row[4]}
                 ouput.append(json)
             return jsonify(ouput)
         else:
