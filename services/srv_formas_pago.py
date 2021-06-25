@@ -29,17 +29,6 @@ def create_forma_pago(datos):
     except Exception as ex:
         return ('error', repr(ex))
 
-def agregar_bonificacion(id):
-    try:
-        conect = mysql.connect()
-        with closing(conect.cursor()) as cursor:
-            cursor.execute('UPDATE tbl_formas_pago p SET pago_saldo = 25000 WHERE p.pago_id = %s', (id))
-            conect.commit()
-            resp = ('ok', '')
-            return resp
-    except Exception as ex:
-        return ('error', repr(ex))
-
 
 def hide_forma_pago(id):
     try:

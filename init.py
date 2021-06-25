@@ -35,4 +35,3 @@ from controllers import  ctrl_compra
 from controllers import ctrl_comprador
 from controllers import ctrl_formas_pago
 from controllers import crtl_direccion_envio
-from controllers import ctrl_ruleta
