@@ -37,3 +37,23 @@ def calificar_producto():
      res.status_code = 200
      return res
 
+@app.route('/get_calificacionTienda/<int:idUsuario>/<int:idTienda>')        
+def get_calificacionTienda(idUsuario,idTienda):
+        resp=srv_experiencia.get_calficacionTienda(idUsuario,idTienda)
+        json_items=[]
+        content={}
+        for resul in resp:
+            content={'calificacion':resul[0]}
+            json_items.append(content)
+            content={}
+        return jsonify(json_items)
+
+@app.route('/calificar_tienda',methods=['POST']) 
+def calificar_tienda():
+     _json=request.get_json(force=True)
+     resp=srv_experiencia.set_calificacion_tienda(_json)
+     if resp[0]!='ok':
+        srv_experiencia.editat_calificacion_tienda(_json)
+     res = jsonify('Producto actualizado exitosamente.')
+     res.status_code = 200
+     return res
