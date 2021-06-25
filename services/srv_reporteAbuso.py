@@ -55,3 +55,15 @@ def eliminar_reporte(idComprador,idTienda):
             return res
     except Exception as ex:
         return ('error', repr(ex))
+
+
+def get_denuncias_by_tienda(id):
+    try:
+        conect = mysql.connect()
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT COUNT(d.comprador_id) FROM tbl_denuncias d WHERE d.tienda_id = %s',(id)) 
+            result=cursor.fetchone()
+            print(result)
+            return ('ok', result)
+    except Exception as ex:
+        return ('error', repr(ex))

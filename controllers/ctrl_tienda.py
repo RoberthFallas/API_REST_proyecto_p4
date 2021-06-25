@@ -72,8 +72,9 @@ def get_productoSelecionado(id):
          json_items=[]
          content={}
          for resul in resp:
+             calificacion = srv_producto.get_calificacion(resul[0])[1]
              content={'producto_id':resul[0],'precio':resul[1],'nombre':resul[2], 'descripcion':resul[3], 'cantidad':resul[4], 
-                    'publicacion':resul[5], 'prom_envio':resul[6], 'cost_envio':resul[7], 'oferta':resul[8], 'pais':resul[9], 'provincia':resul[10], 'canton':resul[11]}
+                    'publicacion':resul[5], 'prom_envio':resul[6], 'cost_envio':resul[7], 'oferta':resul[8], 'pais':resul[9], 'provincia':resul[10], 'canton':resul[11], 'calificacion': calificacion}
              json_items.append(content)
              content={}
          return jsonify(json_items)
@@ -162,7 +163,7 @@ def get_ventas_between(startDate, endDate, id):
 def get_tienda_data_by_user_id(id):
     try:
         resp = svr_tienda.get_tienda_data_by_user_id(id)
-        if resp[0] is "ok":
+        if resp[0] == "ok":
             _json = {"usuario_id": resp[1][0], "nombre_usuario":resp[1][1],
                     "usuario_email": resp[1][2], "usuario_foto":resp[1][3],
                     "usuario_telefono": resp[1][4], "usuario_cedula":resp[1][5],

@@ -59,6 +59,8 @@ def delele_product(id):
  try:
         response = None
         resp = srv_producto.delete_producto(id)
+
+        print(resp)
     
         if resp == 'ok':
             response = jsonify("Producto eliminado con exito")                                                                                   #En la posicion 0 viene el estado en la 1 viene la lista de datos o el mensaje del error
@@ -205,7 +207,53 @@ def get_deseos_by_id(id):
         response.status_code = 500
         return response     
 
+
+@app.route('/get_ofertas/<string:categoria>/<string:precioMenor>/<string:precioMayor>/<string:fechaInicio>/<string:fechaFinal>')
+def get_ofertas(categoria, precioMenor, precioMayor, fechaInicio, fechaFinal):
+ try:
+       
+        response = None
+
+        categoria = getVarData(categoria)
+        precioMenor = getVarData(precioMenor)
+        precioMayor = getVarData(precioMayor)
+        fechaInicio = getVarData(fechaInicio)
+        fechaFinal = getVarData(fechaFinal)
         
+        resp = srv_producto.get_ofertas(categoria,precioMenor, precioMayor, fechaInicio, fechaFinal)
+        print(resp)
+    
+        if resp[0] == 'ok':
+            rows = resp[1]
+            content = {}    
+            json_items = []
+            for resul in rows:
+                content = {'fecha_publicacion':resul[0],'nombre_producto':resul[1],'descripcion':resul[2], 'precio':resul[3],  'precio_oferta':resul[4], 'categoria':resul[5], 'tienda':resul[6]}
+
+                json_items.append(content)
+                content = {}
+
+            response = jsonify(json_items)
+            response.status_code = 200
+            return(response)
+        else:
+            response = jsonify(resp[0])
+            response.status_code = 401 if resp[0] == 'warn' else 500
+            return(response)
+    
+     
+ except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
+
+def getVarData(nombre):
+    if(nombre == "none"):
+        return None
+    else:
+        return nombre
+
+
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     return '.' in filename and \
