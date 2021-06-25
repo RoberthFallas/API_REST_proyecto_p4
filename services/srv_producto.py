@@ -216,7 +216,7 @@ def get_productosMasVendidos():
       conect = mysql.connect()
       with closing(conect.cursor()) as cursor:
    
-        cursor.execute('SELECT p.producto_id, p.producto_nombre,p.producto_descripcion,p.producto_precio,p.producto_cantidad,fo.foto_url,SUM(detalle_cantidad),p.producto_cost_env,p.producto_prom_envio,p.producto_oferta FROM tbl_detalle d JOIN tbl_facturas f ON d.detalle_factura = f.factura_id JOIN tbl_productos p ON p.producto_id = d.detalle_producto inner join tbl_fotos fo on fo.foto_producto=p.producto_id GROUP BY detalle_producto ORDER BY SUM(detalle_cantidad) DESC LIMIT 10')
+        cursor.execute('SELECT p.producto_id,p.producto_nombre,p.producto_descripcion,p.producto_precio,p.producto_cantidad,fo.foto_url,SUM(detalle_cantidad),p.producto_cost_env,p.producto_prom_envio,p.producto_oferta,p.producto_publicacion,di.direcciion_pais, di.direccion_provincia, di.direccion_canton FROM tbl_detalle d JOIN tbl_facturas f ON d.detalle_factura = f.factura_id JOIN tbl_productos p ON p.producto_id = d.detalle_producto inner join tbl_fotos fo on fo.foto_producto=p.producto_id INNER join tbl_direcciones di on di.direccion_id=p.producto_direccion inner JOIN tbl_tiendas t on t.tienda_id=p.producto_tienda where (SELECT COUNT(den.comprador_id) FROM tbl_denuncias den WHERE den.tienda_id = t.tienda_id) <10 GROUP BY detalle_producto ORDER BY SUM(detalle_cantidad) DESC LIMIT 8')
         result=cursor.fetchall()
 
         return (result)
