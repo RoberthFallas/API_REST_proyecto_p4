@@ -59,6 +59,8 @@ def delele_product(id):
  try:
         response = None
         resp = srv_producto.delete_producto(id)
+
+        print(resp)
     
         if resp == 'ok':
             response = jsonify("Producto eliminado con exito")                                                                                   #En la posicion 0 viene el estado en la 1 viene la lista de datos o el mensaje del error

@@ -7,7 +7,7 @@ def create_product(data_json, dir):
  try:
         conect = mysql.connect()
 
-        query = "INSERT INTO tbl_productos( producto_direccion, producto_categoria, producto_tienda, producto_nombre, producto_descripcion, producto_precio, producto_cantidad, producto_publicacion, producto_prom_envio, producto_cost_env) VALUES (%s,%s,%s,%s,%s,%s,%s,CURRENT_DATE(),%s,%s)"
+        query = "INSERT INTO tbl_productos( producto_direccion, producto_categoria, producto_tienda, producto_nombre, producto_descripcion, producto_precio, producto_cantidad, producto_publicacion, producto_prom_envio, producto_cost_env, producto_oferta) VALUES (%s,%s,%s,%s,%s,%s,%s,CURRENT_DATE(),%s,%s, %s)"
         _direccion = dir
         _categoria = data_json['categoria']
         _tienda = data_json['id']
@@ -17,8 +17,9 @@ def create_product(data_json, dir):
         _cantidad = data_json['cantidad']
         _duracion = data_json['duracion']
         _costo = data_json['costo']
+        _oferta = data_json['precioOferta']
 
-        data = (_direccion, _categoria,  _tienda, _nombre,_descripcion, _precio, _cantidad,_duracion, _costo)
+        data = (_direccion, _categoria,  _tienda, _nombre,_descripcion, _precio, _cantidad,_duracion, _costo, _oferta)
 
         with closing(conect.cursor()) as cursor:
 
@@ -40,23 +41,14 @@ def delete_producto(id):
       
         with closing(conect.cursor()) as cursor:
             resp = delelete_images_server(id)
+            print(resp)
             if(resp == 'ok'):
                      query = "DELETE FROM tbl_productos WHERE tbl_productos.producto_id ="+ id
-                     cursor.execute(query)
-                     query = "SELECT p.producto_direccion FROM tbl_productos p WHERE p.producto_id ="+ id
-                     cursor.execute(query)
-                     conect.commit()
-                     id_direccion = cursor.fetchone()
-                     print(id_direccion)
-                     query = "DELETE FROM tbl_direcciones WHERE tbl_direcciones.direccion_id ="+ id
                      cursor.execute(query)
                      conect.commit()
                      return ('ok')
               
             return "No se eliminaron las imagenes"
-
-
-          
      
       except Exception as ex:
         return ('error', repr(ex))
@@ -78,9 +70,10 @@ def delelete_images_server(id):
             conect.commit()
 
             for result in fotos_nombres:
-                filename = result[0]
-                print(filename)
-                os.remove(os.getcwd() + '/resources/images/' + filename)
+              if(result[0] != None):
+                  filename = result[0]
+                  print(filename, " se elimino")
+                  os.remove(os.getcwd() + '/resources/images/' + filename)
 
             return 'ok'
       except Exception as ex:
