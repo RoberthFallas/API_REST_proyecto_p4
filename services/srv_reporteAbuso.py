@@ -24,3 +24,34 @@ def insertar_reporte(json_data):
             return resp
     except  Exception as ex:
         return ('error', repr(ex))
+
+def get_comprasReporte(idComprador,idTienda):
+    try:
+        conect = mysql.connect()
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT count(fa.factura_id) FROM tbl_facturas fa inner JOIN tbl_detalle d on d.detalle_factura=fa.factura_id INNER join tbl_productos p on p.producto_id=d.detalle_producto INNER JOIN tbl_tiendas t on t.tienda_id=p.producto_id WHERE fa.factura_comprador=%s and t.tienda_id=%s',(idComprador,idTienda))
+            result=cursor.fetchone()
+            return ('ok',result)
+    except Exception as ex:
+        return ('error', repr(ex))
+
+def get_reportesRealizados(idComprador,idTienda):
+    try:
+        conect = mysql.connect()
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('SELECT COUNT(d.comprador_id) from tbl_denuncias d WHERE d.comprador_id=%s AND d.tienda_id=%s',(idComprador,idTienda))
+            result=cursor.fetchone()
+            return ('ok',result)
+    except Exception as ex:
+        return ('error', repr(ex))
+
+def eliminar_reporte(idComprador,idTienda):
+    try:
+        conect = mysql.connect()
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('DELETE FROM tbl_denuncias where tbl_denuncias.comprador_id=%s and tbl_denuncias.tienda_id=%s', (idComprador,idTienda))
+            conect.commit()
+            res=jsonify('Reporte eliminado correctamente')
+            return res
+    except Exception as ex:
+        return ('error', repr(ex))

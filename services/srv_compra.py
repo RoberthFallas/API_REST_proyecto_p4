@@ -30,28 +30,43 @@ def getCantidadProducto(idComprador):
     try:
         conect = mysql.connect()
         with  closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT ca.carrito_cant,p.producto_cantidad,p.producto_precio,p.producto_oferta,p.producto_cost_env from tbl_carritos ca INNER JOIN tbl_compradores c on c.comprador_id=ca.comprador_id inner JOIN tbl_productos p on p.producto_id=ca.producto_id WHERE c.comprador_id=%s',(idComprador))
+            cursor.execute('SELECT ca.carrito_cant,p.producto_cantidad,p.producto_precio,p.producto_oferta,p.producto_cost_env,p.producto_id from tbl_carritos ca INNER JOIN tbl_compradores c on c.comprador_id=ca.comprador_id inner JOIN tbl_productos p on p.producto_id=ca.producto_id WHERE c.comprador_id=%s',(idComprador))
             result=cursor.fetchall()
             return (result)
     except Exception as ex:
         return ('error', repr(ex))
 
-def getFormaPagoSeleccionada(idComprador,idFormaPago):
+def getFormaPagoSeleccionada(idFormaPago):
     try:
         conect = mysql.connect()
         with  closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT fg.pago_saldo FROM tbl_formas_pago fg inner JOIN tbl_compradores c on fg.pago_comprador=c.comprador_id WHERE c.comprador_id=%s and fg.pago_id=%s',(idComprador,idFormaPago))
+            cursor.execute('SELECT fg.pago_saldo,fg.pago_cvv FROM tbl_formas_pago fg WHERE fg.pago_id=%s',(idFormaPago))
             return ('ok', cursor.fetchone())   
     except Exception as ex:
         return ('error', repr(ex))
 
-def insertarFactura(idComprador,idFormaPago,subtotal,factura_total):
+def insertarFactura(idComprador,idFormaPago,subtotal,factura_total,idDirrecion):
     try:
         fecha=datetime.datetime.now()
         conect = mysql.connect()
-        query = "INSERT INTO tbl_facturas (factura_comprador,factura_metodo_pago,facura_fecha_hora,factura_subtotal,factura_total) VALUES (%s,%s,%s,%s,%s)"
+        query = "INSERT INTO tbl_facturas (factura_comprador,factura_metodo_pago,facura_fecha_hora,factura_subtotal,factura_total,envio_id) VALUES (%s,%s,%s,%s,%s,%s)"
 
-        data = (idComprador,idFormaPago,fecha,subtotal,factura_total)
+        data = (idComprador,idFormaPago,fecha,subtotal,factura_total,idDirrecion)
+        with closing(conect.cursor()) as cursor:
+            cursor.execute(query, data)
+            conect.commit()
+            id_insert =  cursor.lastrowid 
+            resp=('ok', id_insert)
+        return resp
+    except  Exception as ex:
+        return ('error', repr(ex))
+
+def agregarDetalle(idProducto,idFactura,cantidad,precioFinal):
+    try:
+        conect = mysql.connect()
+        query = "INSERT INTO  tbl_detalle(detalle_producto,detalle_factura,detalle_cantidad,detalle_precio_final) VALUES (%s,%s,%s,%s)"
+
+        data = (idProducto,idFactura,cantidad,precioFinal)
         with closing(conect.cursor()) as cursor:
             cursor.execute(query, data)
             conect.commit()
