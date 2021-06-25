@@ -49,3 +49,13 @@ def get_reportesRealizados(idCliente,idTienda):
 def eliminar_reporte(idComprador,idTienda):
      resp=srv_reporteAbuso.eliminar_reporte(idComprador,idTienda)
      return resp
+
+
+@app.route('/get_denuncias_by_id/<int:id>')        
+def get_denuncias_by_id(id):
+        resp=srv_reporteAbuso.get_denuncias_by_tienda(id)
+     
+        if(resp[0] == "ok"):
+          return jsonify(resp[1])
+
+        return jsonify("no se obtuvieron las denuncias")

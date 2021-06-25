@@ -9,11 +9,13 @@ def get_comentarios(id):
         conect = mysql.connect()
         with  closing(conect.cursor()) as cursor:
             'cursor.execute(''SELECT t.coment_id,t.coment_comprador,t.coment_cuerpo,t.coment_publicacion,u.usuario_foto,u.usuario_nom_usr FROM tbl_comentarios t INNER JOIN tbl_compradores c on c.comprador_id=t.coment_comprador INNER JOIN tbl_usuarios u on u.usuario_id=c.comprador_usuario  WHERE t.coment_producto=%s ORDER BY t.coment_id desc'', (id))'
-            cursor.execute('SELECT t.coment_id,t.coment_comprador,t.coment_cuerpo,t.coment_publicacion,u.usuario_foto,u.usuario_nom_usr,r.resp_cuerpo FROM tbl_comentarios t INNER JOIN tbl_compradores c on c.comprador_id=t.coment_comprador INNER JOIN tbl_usuarios u on u.usuario_id=c.comprador_usuario LEFT JOIN tbl_respuestas r on r.resp_comenrario=t.coment_id WHERE t.coment_producto=%s ORDER BY t.coment_id desc',(id))
+            cursor.execute('SELECT t.coment_id,t.coment_comprador,t.coment_cuerpo,t.coment_publicacion,u.usuario_foto,u.usuario_nom_usr,r.resp_cuerpo, ut.usuario_foto as "tienda_foto",  ut.usuario_nombre_compl FROM tbl_comentarios t INNER JOIN tbl_compradores c on c.comprador_id=t.coment_comprador INNER JOIN tbl_usuarios u on u.usuario_id=c.comprador_usuario JOIN tbl_productos p ON p.producto_id = t.coment_producto JOIN tbl_tiendas td ON td.tienda_id = p.producto_tienda JOIN tbl_usuarios ut ON ut.usuario_id = td.tienda_usuario LEFT JOIN tbl_respuestas r on r.resp_comenrario=t.coment_id WHERE t.coment_producto=%s ORDER BY t.coment_id desc',(id))
             result=cursor.fetchall()
             return (result)
     except Exception as ex:
         return ('error', repr(ex))
+
+
 
 def set_comentario(json_data):
     try:
@@ -56,5 +58,18 @@ def get_comentarios_tienda(id):
             result=cursor.fetchall()
             print(result)
             return ('ok', result)
+    except Exception as ex:
+        return ('error', repr(ex))
+
+def insertar_respuesta(_json):
+    try:
+        conect = mysql.connect()
+        _id = _json['id_comentario']
+        _repuesta = _json['respuesta']
+
+        with  closing(conect.cursor()) as cursor:
+            cursor.execute('INSERT INTO tbl_respuestas(resp_comenrario, resp_cuerpo) VALUES (%s,%s)',(_id, _repuesta)) 
+            conect.commit()
+            return ('ok')
     except Exception as ex:
         return ('error', repr(ex))

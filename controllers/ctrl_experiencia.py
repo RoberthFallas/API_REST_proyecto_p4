@@ -23,6 +23,8 @@ def get_comprador2(id):
             content={'comprador_id':resul[0]}
             json_items.append(content)
             content={}
+        
+        print(jsonify(json_items))
         return jsonify(json_items)
 
 @app.route('/calificar_producto',methods=['POST']) 
