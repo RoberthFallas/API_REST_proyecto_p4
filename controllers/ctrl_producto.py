@@ -212,3 +212,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/get_productosMasVendidos')
+def get_productosMasVendidos():
+     resp=srv_producto.get_productosMasVendidos()
+     json_items=[]
+     content={}
+     for resul in resp:
+            content={'producto_id':resul[0],'nombre':resul[1],'descripcion':resul[2],'precio':resul[3],'cantidad':resul[4],
+                  'foto':resul[5],'vendidos':resul[6],'cost_envio':resul[7],'prom_envio':resul[8],'oferta':resul[9]}
+            json_items.append(content)
+            content={}
+     return jsonify(json_items)

@@ -218,5 +218,14 @@ def update_product_cantidad(idCantidad,idProducto): #esta en desarrollo
   except Exception as ex:
           return ('error', repr(ex))  
      
+def get_productosMasVendidos():
+   try:
+      conect = mysql.connect()
+      with closing(conect.cursor()) as cursor:
+   
+        cursor.execute('SELECT p.producto_id, p.producto_nombre,p.producto_descripcion,p.producto_precio,p.producto_cantidad,fo.foto_url,SUM(detalle_cantidad),p.producto_cost_env,p.producto_prom_envio,p.producto_oferta FROM tbl_detalle d JOIN tbl_facturas f ON d.detalle_factura = f.factura_id JOIN tbl_productos p ON p.producto_id = d.detalle_producto inner join tbl_fotos fo on fo.foto_producto=p.producto_id GROUP BY detalle_producto ORDER BY SUM(detalle_cantidad) DESC LIMIT 10')
+        result=cursor.fetchall()
 
-  
+        return (result)
+   except  Exception as ex:
+      return ('error',repr(ex))

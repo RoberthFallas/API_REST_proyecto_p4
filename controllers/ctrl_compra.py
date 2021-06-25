@@ -48,10 +48,12 @@ def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
             else:
                 subTotal=subTotal+costos[0]*costos[2]
                 costoEnvio=costoEnvio+costos[4]
-        'Consultar si la forma de pago tiene el monto para pagar'
+        #obtener el monto y cvv de forma de pago seleccionada
         formPago=srv_compra.getFormaPagoSeleccionada(idFormaPago)
         if formPago[0]=='ok':
+            #Compara el cvv de la tarjeta
             if(formPago[1][1]==cvv):
+                #compara el monto
                 if(formPago[1][0]>subTotal+costoEnvio):               
                     factura=srv_compra.insertarFactura(idCliente,idFormaPago,subTotal,subTotal+costoEnvio,idDirrecion)
                     for detalle in resp:
@@ -65,9 +67,8 @@ def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
                             srv_compra.agregarDetalle(resul[5],factura[1],detalle[0],costo)
                             srv_carrito.eliminar_carrito(idCliente,detalle[5])
                             srv_producto.update_product_cantidad(detalle[1]-detalle[0],detalle[5])
-                    resp = jsonify('Compra correcta')
-                    resp.status_code = 200
-                    return resp  
+                    respPago = jsonify('ok',factura[1])
+                    return respPago  
                 else:
                         resp = jsonify('La compra sobrepasa el monto')
                         resp.status_code = 200
