@@ -144,5 +144,25 @@ def get_tiendas_by_param(param):
         return ('error',repr(ex)) 
 
  
+def get_calificacion_tienda(id):
+  try:
+      conect = mysql.connect()
+      with closing(conect.cursor()) as cursor:
 
+        e = []
 
+        for x in range(0, 5):
+          query = 'SELECT COUNT(p.evaluacion_estrellas) FROM  tbl_evaluacion_tiendas p WHERE p.evaluacion_estrellas = %s AND p.tienda_id = %s'
+          data = (x+1, id)
+          cursor.execute(query, data)
+          e.append ( cursor.fetchone()[0])
+          print(e[x])
+          """ En este  proceso se obtiene la calificacion mediante una formula 1*N + 2*N + 3*N ..../ N + N + N   """
+        try:
+          calificacion = (1*e[0] + 2*e[1]  + 3*e[2] + 4*e[3] + 5*e[4]) / (e[0] + e[1] + e[2] + e[3] + e[4]) 
+        except ZeroDivisionError:
+          calificacion = 0
+
+        return ('ok', calificacion)
+  except  Exception as ex:
+      return ('error',repr(ex))
