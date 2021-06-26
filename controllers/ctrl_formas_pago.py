@@ -14,7 +14,7 @@ def get_metodos_pago_by_user_id(id):
 
             for row in resp[1]:
                 json = {'pago_id': row[0], 'propietario': row[1], 'tarjeta': row[2],
-                 'vencimiento': row[3], 'pago_saldo': row[4]}
+                 'vencimiento': row[3].strftime("%m/%d/%Y"), 'pago_saldo': row[4]}
                 ouput.append(json)
             return jsonify(ouput)
         else:
@@ -43,7 +43,7 @@ def create_forma_pago():
                 response.status_code = 500
                 return response
         else:
-            response = jsonify(resp[1])
+            response = jsonify('Un problema inesperado ha impedido guardar tu nueva forma de pago')
             response.status_code = 409
             return response
     except Exception as ex:
