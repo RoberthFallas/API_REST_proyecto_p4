@@ -126,7 +126,7 @@ def get_informacion_tienda(idTienda):
     try:
         conect=mysql.connect()
         with closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT u.usuario_nombre_compl,u.usuario_telefono,u.usuario_email,t.tienda_descripcion,d.direcciion_pais,d.direccion_provincia,d.direccion_canton from tbl_tiendas t inner JOIN tbl_usuarios u on u.usuario_id=t.tienda_id INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion where t.tienda_id=%s',(idTienda))
+            cursor.execute('SELECT u.usuario_nombre_compl,u.usuario_telefono,u.usuario_email,t.tienda_descripcion,d.direcciion_pais,d.direccion_provincia,d.direccion_canton from tbl_tiendas t inner JOIN tbl_usuarios u on u.usuario_id=t.tienda_usuario  INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion where t.tienda_id=%s',(idTienda))
             result=cursor.fetchone()
             return ('ok',result)
     except Exception as ex:
