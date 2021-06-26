@@ -27,6 +27,7 @@ def get_DirrecionEnvio(idCliente):
             content={}
         return jsonify(json_items)
 
+#metodo utlizado pra la creacion de la pasarela de pago.. 
 @app.route('/get_comprar/<int:idCliente>/<int:idFormaPago>/<string:cvv>/<int:idDirrecion>')
 def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
     'Consultar si existe la cantidad solicitada del producto'
