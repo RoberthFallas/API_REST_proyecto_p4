@@ -217,6 +217,7 @@ def edit_tienda():
 def get_informacion_tienda(id):
     try: 
         resp=svr_tienda.get_informacion_tienda(id)
+        print(resp)
         if resp[0] == 'ok':
             _json={
                     'nombre':resp[1][0],'telefono':resp[1][1],'correo':resp[1][2],'descripcion':resp[1][3],'pais':resp[1][4],
@@ -230,3 +231,16 @@ def get_informacion_tienda(id):
     except Exception as ex:
         print(ex)
     
+
+@app.route('/get_tiendas_by_param/<string:param>')
+def get_tiendas_by_param(param):
+    
+        resp=svr_tienda.get_tiendas_by_param(param)
+        if(resp[0] == "ok"):
+            json_items=[]
+            content={}
+            for resul in resp[1]:
+                content={'tienda_id':resul[0],'descripcion':resul[1],'nombre':resul[2],'pais':resul[3],'provincia':resul[4],'canton':resul[5],'foto':resul[6]}
+                json_items.append(content)
+                content={}
+            return jsonify(json_items)

@@ -126,9 +126,23 @@ def get_informacion_tienda(idTienda):
     try:
         conect=mysql.connect()
         with closing(conect.cursor()) as cursor:
-            cursor.execute('SELECT u.usuario_nombre_compl,u.usuario_telefono,u.usuario_email,t.tienda_descripcion,d.direcciion_pais,d.direccion_provincia,d.direccion_canton from tbl_tiendas t inner JOIN tbl_usuarios u on u.usuario_id=t.tienda_id INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion where t.tienda_id=%s',(idTienda))
+            cursor.execute('SELECT u.usuario_nombre_compl,u.usuario_telefono,u.usuario_email,t.tienda_descripcion,d.direcciion_pais,d.direccion_provincia,d.direccion_canton from tbl_tiendas t inner JOIN tbl_usuarios u on u.usuario_id=t.tienda_usuario INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion where t.tienda_id=%s',(idTienda))
             result=cursor.fetchone()
             return ('ok',result)
     except Exception as ex:
         return ('error',repr(ex))  
-    
+
+""""Filtro de busque de tiendas por parametro"""
+def get_tiendas_by_param(param):
+    try:
+        conect=mysql.connect()
+        with closing(conect.cursor()) as cursor:
+            cursor.execute("SELECT t.tienda_id,t.tienda_descripcion,u.usuario_nombre_compl,d.direcciion_pais,d.direccion_provincia,d.direccion_canton,u.usuario_foto FROM tbl_tiendas t INNER JOIN tbl_usuarios u on t.tienda_usuario=u.usuario_id INNER JOIN tbl_direcciones d on d.direccion_id=t.tienda_direccion WHERE (SELECT COUNT(d.comprador_id) FROM tbl_denuncias d WHERE d.tienda_id = t.tienda_id) < 10 and u.usuario_nombre_compl LIKE %s ORDER by (u.usuario_nombre_compl)",("%"+param+"%"))
+            result=cursor.fetchall()
+            return ('ok',result)
+    except Exception as ex:
+        return ('error',repr(ex)) 
+
+ 
+
+
