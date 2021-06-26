@@ -33,7 +33,7 @@ def get_categorias2(id):
             json_items.append(content)
             content={}
         return jsonify(json_items)
-
+"""Obtiene un lista de tiendas de acuerdo a los filtros seleccionados, es decir, nombre y categoria"""
 @app.route('/get_productosTiendas/<int:id>/<string:nombre>/<int:id_categoria>')
 @app.route('/get_productosTiendas/<int:id>/<int:id_categoria>')
 @app.route('/get_productosTiendas/<int:id>/<string:nombre>')
@@ -78,7 +78,7 @@ def get_productoSelecionado(id):
              json_items.append(content)
              content={}
          return jsonify(json_items)
-
+"""Subscripciones by id de tienda"""
 @app.route('/get_subscripciones_by_id/<int:id>')
 def get_subscripciones_by_id(id):
     try:
@@ -244,3 +244,23 @@ def get_tiendas_by_param(param):
                 json_items.append(content)
                 content={}
             return jsonify(json_items)
+
+
+@app.route('/get_calificacion_by_tienda_id/<int:id>')
+def get_calificacion_by_tienda_id(id):
+    try:
+        resp = svr_tienda.get_calificacion_tienda(id)
+        print(resp)
+        if(resp[0] == 'ok'):
+            response = jsonify(resp[1])
+            response.status_code = 200
+            return response
+
+        response = jsonify('No se pudo obtener la calificación')
+        response.status_code = 401
+        return response
+
+    except Exception as ex:
+        response = jsonify(repr(ex))
+        response.status_code = 500
+        return response 
