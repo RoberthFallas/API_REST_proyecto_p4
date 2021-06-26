@@ -43,7 +43,7 @@ def create_forma_pago():
                 response.status_code = 500
                 return response
         else:
-            response = jsonify(resp[1])
+            response = jsonify('Un problema inesperado ha impedido guardar tu nueva forma de pago')
             response.status_code = 409
             return response
     except Exception as ex:
