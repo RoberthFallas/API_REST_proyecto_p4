@@ -6,6 +6,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
+def getTiendaByUserId(id):
+    try:
+        conect = mysql.connect()
+        with closing(conect.cursor()) as cursor:
+
+            cursor.execute('SELECT t.tienda_id, t.tienda_descripcion, d.direcciion_pais, d.direccion_provincia, d.direccion_canton, u.usuario_nom_usr, u.usuario_foto, u.usuario_email, u.usuario_telefono, u.usuario_cedula, u.usuario_nombre_compl FROM tbl_tiendas t JOIN tbl_direcciones d ON t.tienda_direccion = d.direccion_id JOIN tbl_usuarios u ON u.usuario_id = t.tienda_usuario WHERE t.tienda_usuario = %s', (id,))
+            
+            if cursor.rowcount > 0:
+             
+                return ('ok', cursor.fetchone())      
+    except Exception as ex:
+        return ('error', repr(ex))
+
 def login(user, password):
     try:
         conect = mysql.connect()
