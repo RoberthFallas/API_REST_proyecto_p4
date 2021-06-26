@@ -37,7 +37,7 @@ def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
         for resul in resp:
             if resul[0]>resul[1]:
                cantidadExiste=False
-               r = jsonify('La compra sobrepasa el monto',resul[6])
+               r = jsonify('La cantidad solicitada de  '+resul[6]+' no se encuentra disponible')
                r.status_code = 401
                return(r)              
     if(cantidadExiste==True):
@@ -73,19 +73,19 @@ def get_comprar(idCliente,idFormaPago,cvv,idDirrecion):
                     respPago = jsonify('ok',factura[1])
                     return respPago  
                 else:
-                        resp = jsonify('La compra sobrepasa el monto')
+                        resp = jsonify('La compra sobrepasa el monto de la tarjeta')
                         resp.status_code = 401
                         return resp  
             else:
-                 resp = jsonify('El cvv no concuerda')
+                 resp = jsonify('El cvv no concuerda con el de la tarjeta')
                  resp.status_code = 401
                  return resp          
         else:
-            resp = jsonify('Error forma de pago mala')
+            resp = jsonify('Error al obtener la forma de pago')
             resp.status_code = 401
             return resp 
     else:
-       resp = jsonify('Error cantida producto.')
-       resp.status_code = 401
-       return resp
+      resp = jsonify('Error cantida producto.')
+      resp.status_code = 401
+      return resp
 
